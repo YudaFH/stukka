@@ -59,9 +59,23 @@ class AuthenticatedSessionController extends Controller
             return redirect()->to($url);
         }
 
-        // Fallback normal: kalau user sebelumnya mau akses halaman tertentu
-        // akan masuk ke intended, kalau tidak ada ya ke homepage
-        return redirect()->intended('/');
+        // Bersihkan url.intended jika mengarah ke /dashboard lama yang tidak ada
+        $intended = $request->session()->get('url.intended');
+        if ($intended && (str_contains($intended, '/dashboard') && !str_contains($intended, '/my-dashboard') && !str_contains($intended, '/karyawan/dashboard'))) {
+            $request->session()->forget('url.intended');
+        }
+
+        // Role-based dashboard redirection (Hanya Admin dan Karyawan)
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return redirect()->intended(route('admin.index'));
+        }
+
+        if ($user->isKaryawan()) {
+            return redirect()->intended(route('karyawan.dashboard'));
+        }
+
+        return redirect()->intended(route('home'));
     }
 
     /**

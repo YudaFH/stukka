@@ -8,10 +8,38 @@ use App\Models\Booking;
 class AdminBookingController extends Controller
 {
     // 1. Menampilkan Daftar Booking
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::latest()->get();
-        return view('admin.bookings.index', compact('bookings'));
+        $query = Booking::query();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('whatsapp_number', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->latest()->get();
+
+        $totalBookings = Booking::count();
+        $pendingBookings = Booking::where('status', 'pending')->count();
+        $approvedBookings = Booking::where('status', 'approved')->count();
+        $rejectedBookings = Booking::where('status', 'rejected')->count();
+
+        return view('admin.bookings.index', compact(
+            'bookings',
+            'totalBookings',
+            'pendingBookings',
+            'approvedBookings',
+            'rejectedBookings'
+        ));
     }
 
     // ==========================================

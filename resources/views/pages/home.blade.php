@@ -127,12 +127,12 @@
         <div class="absolute top-0 left-0 w-full h-full z-0 pointer-events-none overflow-hidden">
             <iframe src="https://www.youtube.com/embed/{{ $videoId }}?autoplay=1&mute=1&controls=0&loop=1&playlist={{ $videoId }}&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1" class="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 object-cover opacity-80" frameborder="0" allowfullscreen></iframe>
         </div>
-        <div class="absolute inset-0 bg-black/50 z-10 bg-gradient-to-b from-black/30 via-transparent to-[#001D5E]"></div>
+        <div class="absolute inset-0 bg-black/60 z-10"></div>
 
         <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-10">
             <span class="inline-block py-1 px-4 rounded-full bg-[#F7941D]/90 text-white text-sm font-bold tracking-widest uppercase mb-6 backdrop-blur-sm shadow-lg animate-fade-in-up">STUKKA EVENTS</span>
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 leading-tight drop-shadow-2xl tracking-tight">
-                Creative work, <br class="hidden sm:inline" /> <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F7941D] to-yellow-300">reimagined</span>
+                Creative work, <br class="hidden sm:inline" /> <span class="text-[#F7941D]">reimagined</span>
             </h1>
             <p class="mt-6 text-lg md:text-2xl font-light text-gray-200 max-w-3xl mx-auto drop-shadow-md leading-relaxed">
                 Menciptakan pengalaman luar biasa melalui keberanian, presisi, dan inovasi.
@@ -140,9 +140,15 @@
             <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
                 @if(Auth::check() && Auth::user()->usertype == 'admin')
                     <a href="{{ route('admin.index') }}" 
-                       class="inline-flex items-center justify-center px-10 py-4 text-base font-bold rounded-full text-white bg-red-600 hover:bg-red-700 transition-all shadow-lg shadow-red-500/30 transform hover:scale-105">
+                       class="inline-flex items-center justify-center px-10 py-4 text-base font-bold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg border-2 border-blue-400">
                         <i data-lucide="layout-dashboard" class="w-5 h-5 mr-2"></i>
                         Masuk ke Panel Admin
+                    </a>
+                @elseif(Auth::check() && Auth::user()->usertype == 'karyawan')
+                    <a href="{{ route('karyawan.dashboard') }}" 
+                       class="inline-flex items-center justify-center px-10 py-4 text-base font-bold rounded-full text-white bg-[#F7941D] hover:bg-orange-600 transition-all shadow-lg border-2 border-orange-500">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-2"></i>
+                        Dashboard Karyawan & Presensi
                     </a>
                 @else
                     <a href="{{ route('services') }}" 
@@ -229,11 +235,6 @@
 
     {{-- 3. WHY US --}}
     <div class="bg-gray-50 py-24 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-100 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-orange-100 rounded-full blur-3xl"></div>
-        </div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <span class="text-[#F7941D] font-bold tracking-widest uppercase text-sm mb-3 block">Why Choose Us</span>
@@ -247,8 +248,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 group flex flex-col">
-                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#001D5E] transition-colors duration-300">
-                        <i data-lucide="zap" class="w-7 h-7 text-[#001D5E] group-hover:text-white transition-colors"></i>
+                    <div class="w-14 h-14 bg-[#001D5E] text-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="zap" class="w-7 h-7 text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-[#001D5E] mb-4">Komitmen & Inovasi</h3>
                     <p class="text-gray-600 text-sm leading-relaxed flex-grow">
@@ -257,8 +258,8 @@
                 </div>
                 <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 group flex flex-col relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-[#F7941D]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
-                    <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F7941D] transition-colors duration-300">
-                        <i data-lucide="award" class="w-7 h-7 text-[#F7941D] group-hover:text-white transition-colors"></i>
+                    <div class="w-14 h-14 bg-[#F7941D] text-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="award" class="w-7 h-7 text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-[#001D5E] mb-4">Prestasi & Dedikasi</h3>
                     <p class="text-gray-600 text-sm leading-relaxed flex-grow">
@@ -266,8 +267,8 @@
                     </p>
                 </div>
                 <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 group flex flex-col">
-                    <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors duration-300">
-                        <i data-lucide="heart" class="w-7 h-7 text-purple-600 group-hover:text-white transition-colors"></i>
+                    <div class="w-14 h-14 bg-purple-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="heart" class="w-7 h-7 text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-[#001D5E] mb-4">Sinergi Bersama</h3>
                     <p class="text-gray-600 text-sm leading-relaxed flex-grow">
@@ -317,7 +318,7 @@
             <div class="text-center max-w-4xl mx-auto mb-16">
                 <span class="text-[#F7941D] font-bold tracking-widest uppercase text-sm mb-3 block">Partnership Support</span>
                 <h2 class="text-3xl md:text-4xl font-extrabold text-[#001D5E] mb-6">Sponsorship Management</h2>
-                <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
+                <div class="bg-white p-6 rounded-2xl border-2 border-slate-300 shadow-sm">
                     <p class="text-[#001D5E] font-medium italic text-lg leading-relaxed">
                         "Komitmen kami adalah untuk membantu Anda mencapai kesuksesan acara dengan menjalin kemitraan yang kuat dengan sponsor yang tepat dan memulai kolaborasi kami dalam mencari sponsorship yang dapat mengangkat acara Anda ke tingkat yang lebih tinggi."
                     </p>
@@ -416,7 +417,7 @@
                                 </div>
                             @endif
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 bg-black/40"></div>
 
                             <div class="absolute bottom-4 left-4 right-4">
                                 <p class="text-white font-extrabold text-lg leading-tight line-clamp-2">
@@ -661,13 +662,9 @@
 
     {{-- 6. OUR GOALS SECTION --}}
     <div class="bg-[#001D5E] py-24 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-
        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
            <div class="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
                <div class="w-full lg:w-5/12 mb-12 lg:mb-0 relative sticky top-24">
-                   <div class="absolute -inset-4 bg-gradient-to-r from-[#F7941D] to-yellow-500 rounded-[2rem] opacity-30 blur-lg"></div>
                    <img 
                        src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" 
                        alt="Event Planning Team" 

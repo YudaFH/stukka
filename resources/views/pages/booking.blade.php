@@ -98,8 +98,8 @@
                                  @foreach($eventTypes as $type)
                                      <label for="type_{{ strtolower($type) }}" class="cursor-pointer">
                                          <input type="radio" id="type_{{ strtolower($type) }}" name="event_type" value="{{ $type }}" class="peer sr-only" {{ old('event_type') == $type ? 'checked' : '' }} required>
-                                         <div class="rounded-xl border border-gray-200 p-3 text-center hover:bg-gray-50 peer-checked:border-[#F7941D] peer-checked:bg-orange-50 peer-checked:text-[#F7941D] transition-all shadow-sm">
-                                             <span class="text-xs md:text-sm font-semibold">{{ $type }}</span>
+                                         <div class="rounded-xl border-2 border-slate-300 p-3 text-center hover:bg-slate-100 peer-checked:border-[#F7941D] peer-checked:bg-[#F7941D] peer-checked:text-white transition-all shadow-sm">
+                                             <span class="text-xs md:text-sm font-bold">{{ $type }}</span>
                                          </div>
                                      </label>
                                  @endforeach

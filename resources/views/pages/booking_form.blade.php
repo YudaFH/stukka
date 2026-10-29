@@ -15,7 +15,7 @@
             </div>
 
             {{-- Ringkasan tanggal + next step --}}
-            <div class="mb-8 bg-blue-50 p-5 rounded-2xl border border-blue-100">
+            <div class="mb-8 bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="text-center sm:text-left">
                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tanggal pilihan Anda</p>
@@ -30,7 +30,7 @@
 
                     {{-- Opsional: tombol ganti tanggal (kalau kamu punya route balik pilih tanggal) --}}
                     <a href="{{ url('/services') }}"
-                       class="inline-flex justify-center items-center px-5 py-3 rounded-xl bg-white border border-blue-200 text-[#001D5E] font-bold hover:bg-blue-50 transition">
+                       class="inline-flex justify-center items-center px-5 py-3 rounded-xl bg-white border-2 border-slate-300 text-[#001D5E] font-bold hover:bg-slate-100 transition">
                         Ganti Tanggal
                     </a>
                 </div>

@@ -12,10 +12,28 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class AdminEventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::latest()->paginate(10);
-        return view('admin.events.index', compact('events'));
+        $search = $request->input('search');
+        $status = $request->input('status');
+
+        $query = Event::query();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('client_name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $status);
+        }
+
+        $events = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.events.index', compact('events', 'search', 'status'));
     }
 
     public function create()

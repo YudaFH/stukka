@@ -60,7 +60,7 @@
         {{-- 1. Brand/Event Management (Top Left) --}}
         {{-- lg:col-span-2: Memakan 2 kolom (posisi 1-2) --}}
         <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-[#F7941D] hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-[#F7941D] mb-6">
+            <div class="w-14 h-14 bg-[#F7941D] rounded-xl flex items-center justify-center text-white mb-6 shadow-md">
                 <i data-lucide="calendar-check" class="w-8 h-8"></i>
             </div>
             <h3 class="text-xl font-bold text-[#001D5E] mb-3">Brand/Event Management</h3>
@@ -71,8 +71,8 @@
 
         {{-- 2. Visual & Creative Management (Top Center) --}}
         {{-- lg:col-span-2: Memakan 2 kolom (otomatis mengisi posisi 3-4) --}}
-        <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-blue-500 hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
+        <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-[#001D5E] hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-[#001D5E] rounded-xl flex items-center justify-center text-white mb-6 shadow-md">
                 <i data-lucide="palette" class="w-8 h-8"></i>
             </div>
             <h3 class="text-xl font-bold text-[#001D5E] mb-3">Visual & Creative</h3>
@@ -83,8 +83,8 @@
 
         {{-- 3. Application Digital Management (Top Right) --}}
         {{-- lg:col-span-2: Memakan 2 kolom (otomatis mengisi posisi 5-6) --}}
-        <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-green-500 hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-6">
+        <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-emerald-600 hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-md">
                 <i data-lucide="smartphone" class="w-8 h-8"></i>
             </div>
             <h3 class="text-xl font-bold text-[#001D5E] mb-3">App Digital Management</h3>
@@ -98,8 +98,8 @@
              lg:col-start-2 : Memaksa mulai di garis kolom ke-2.
              lg:col-span-2  : Memakan 2 kolom (jadi mengisi kolom 2 & 3).
         --}}
-        <div class="lg:col-start-2 lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-purple-500 hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-6">
+        <div class="lg:col-start-2 lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-purple-600 hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-md">
                 <i data-lucide="settings" class="w-8 h-8"></i>
             </div>
             <h3 class="text-xl font-bold text-[#001D5E] mb-3">Production Management</h3>
@@ -113,8 +113,8 @@
              lg:col-start-4 : Memaksa mulai di garis kolom ke-4.
              lg:col-span-2  : Memakan 2 kolom (jadi mengisi kolom 4 & 5).
         --}}
-        <div class="lg:col-start-4 lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-red-500 hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center text-red-600 mb-6">
+        <div class="lg:col-start-4 lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg border-b-4 border-red-600 hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-md">
                 <i data-lucide="handshake" class="w-8 h-8"></i>
             </div>
             <h3 class="text-xl font-bold text-[#001D5E] mb-3">Sponsorship Management</h3>
@@ -142,7 +142,7 @@
             <form action="{{ route('booking.create') }}" method="GET" id="checkDateForm" class="relative z-10">
                 
                 @if(session('error'))
-                    <div class="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-center font-bold text-sm">
+                    <div class="bg-white border-2 border-red-600 text-red-700 p-4 rounded-xl mb-6 text-center font-bold text-sm shadow-sm">
                         {{ session('error') }}
                     </div>
                 @endif
@@ -163,8 +163,8 @@
                         </div>
                     </div>
                     
-                    <p class="text-sm text-gray-400 mt-4 flex justify-center items-center gap-2">
-                        <span class="w-3 h-3 bg-red-100 rounded-full border border-red-200"></span> Tanggal abu-abu sudah penuh (Booked).
+                    <p class="text-sm text-gray-500 mt-4 flex justify-center items-center gap-2">
+                        <span class="w-3 h-3 bg-red-600 rounded-full"></span> Tanggal abu-abu sudah penuh (Booked).
                     </p>
                 </div>
 

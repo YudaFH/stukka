@@ -48,18 +48,18 @@
                         {{-- Status Badge --}}
                         <div class="absolute top-4 left-4 z-10">
                             @if($event->status == 'upcoming')
-                                <span class="bg-blue-600 text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-lg">Persiapan</span>
+                                <span class="bg-[#001D5E] text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-md">Persiapan</span>
                             @elseif($event->status == 'ongoing')
-                                <span class="bg-green-500 text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-lg animate-pulse">Sedang Berlangsung</span>
+                                <span class="bg-[#F7941D] text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-md animate-pulse">Sedang Berlangsung</span>
                             @else
-                                <span class="bg-gray-800 text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-lg opacity-90">Selesai</span>
+                                <span class="bg-slate-700 text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-lg shadow-md">Selesai</span>
                             @endif
                         </div>
 
                         {{-- Image Link --}}
                         <a href="{{ route('portfolio.show', $event->id) }}" class="relative h-64 overflow-hidden bg-gray-200 block">
                             <img src="{{ $event->image }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 @if($event->status == 'closed' || $event->status == 'finished') grayscale opacity-80 @endif">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
                         </a>
 
                         {{-- Content --}}

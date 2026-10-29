@@ -18,13 +18,13 @@
                     </p>
 
                     <h2 class="text-2xl font-bold text-[#001D5E] mb-4">Status Booking Terbaru</h2>
-                    <div class="p-4 bg-blue-50 rounded-lg flex items-center justify-between shadow-sm border border-blue-200">
+                    <div class="p-4 bg-white rounded-xl flex items-center justify-between shadow-sm border-2 border-slate-300">
                         <div>
-                            <p class="font-semibold text-lg text-blue-900">Neon Music Festival 2024</p>
+                            <p class="font-bold text-lg text-[#001D5E]">Neon Music Festival 2024</p>
                             <p class="text-sm text-gray-500">Tanggal: 24 Okt 2024 | Lokasi: GBK Senayan</p>
                         </div>
-                        <span class="inline-flex items-center px-3 py-1 text-sm font-bold leading-none text-green-100 bg-green-600 rounded-full">
-                            <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Dikonfirmasi
+                        <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 rounded-lg">
+                            <i data-lucide="check-circle" class="w-4 h-4 mr-1.5"></i> Dikonfirmasi
                         </span>
                     </div>
 

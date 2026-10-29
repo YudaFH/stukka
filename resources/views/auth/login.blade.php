@@ -89,28 +89,8 @@
                     </button>
                 </form>
 
-                <div class="mt-8">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-200"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">Atau masuk dengan</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 grid grid-cols-1 gap-3">
-                        <button onclick="alert('Simulasi: Login dengan Google')" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-full shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors items-center gap-2 transform hover:scale-[1.02]">
-                            Google
-                        </button>
-                    </div>
-                </div>
-
-                <p class="mt-8 text-center text-sm text-gray-600">
-                    Belum punya akun? 
-                    <a href="/register" class="font-medium text-[#F7941D] hover:text-orange-600">
-                        Buat Akun Baru
-                    </a>
+                <p class="mt-8 text-center text-xs text-slate-500 font-medium">
+                    Portal Internal Stukka Events & Digital • Akses Khusus Admin & Karyawan
                 </p>
             </div>
         </div>

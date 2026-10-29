@@ -15,18 +15,18 @@
 
     {{-- Success message (lebih meyakinkan + SLA) --}}
     @if(session('success'))
-        <div class="mb-8 rounded-2xl border border-green-200 bg-green-50 p-5">
+        <div class="mb-8 rounded-2xl border-2 border-emerald-600 bg-white p-5 shadow-sm">
             <div class="flex items-start gap-3">
-                <div class="mt-0.5 text-green-700">
-                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                <div class="p-1.5 rounded-lg bg-emerald-600 text-white shrink-0">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
                 </div>
                 <div class="flex-1">
-                    <p class="font-extrabold text-green-800">Permintaan event berhasil kami terima.</p>
-                    <p class="text-green-800/90 mt-1">
+                    <p class="font-extrabold text-emerald-950">Permintaan event berhasil kami terima.</p>
+                    <p class="text-slate-700 mt-1">
                         Tim Stukka akan menghubungi Anda via WhatsApp <span class="font-bold">maksimal 1×24 jam</span>.
                         Tidak ada biaya pada tahap ini.
                     </p>
-                    <p class="text-sm text-green-900/70 mt-2">{{ session('success') }}</p>
+                    <p class="text-sm font-semibold text-emerald-800 mt-2">{{ session('success') }}</p>
                 </div>
             </div>
         </div>
@@ -134,17 +134,17 @@
                         {{-- Status + actions --}}
                         <div class="flex flex-col items-start lg:items-end gap-3">
                             @if($booking->status == 'approved')
-                                <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full font-extrabold text-sm border border-green-200">
+                                <span class="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full font-extrabold text-sm shadow-sm">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i>
                                     {{ $statusLabel }}
                                 </span>
                             @elseif($booking->status == 'pending')
-                                <span class="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full font-extrabold text-sm border border-yellow-200">
+                                <span class="inline-flex items-center gap-2 bg-[#F7941D] text-white px-4 py-2 rounded-full font-extrabold text-sm shadow-sm">
                                     <i data-lucide="clock" class="w-4 h-4"></i>
                                     {{ $statusLabel }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full font-extrabold text-sm border border-red-200">
+                                <span class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full font-extrabold text-sm shadow-sm">
                                     <i data-lucide="x-circle" class="w-4 h-4"></i>
                                     {{ $statusLabel }}
                                 </span>
@@ -152,19 +152,19 @@
 
                             {{-- Timeline kecil buat pending --}}
                             @if($booking->status == 'pending')
-                                <div class="w-full lg:w-72 bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                                <div class="w-full lg:w-72 bg-white border-2 border-slate-300 rounded-2xl p-4">
                                     <p class="text-xs font-bold text-gray-500 mb-3">Tahapan</p>
                                     <div class="space-y-2 text-sm text-gray-700">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                                             Permintaan diterima
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                             Konfirmasi tim (≤ 1×24 jam)
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-gray-300"></span>
+                                            <span class="w-2 h-2 rounded-full bg-slate-300"></span>
                                             Finalisasi jadwal & penawaran
                                         </div>
                                     </div>
@@ -176,9 +176,11 @@
                     {{-- Admin notes --}}
                     @if($booking->admin_notes)
                         @if($booking->status == 'rejected')
-                            <div class="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl">
+                            <div class="mt-6 p-4 bg-white border-2 border-red-600 rounded-2xl">
                                 <div class="flex items-start gap-3">
-                                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                                    <span class="p-1 rounded bg-red-600 text-white flex items-center justify-center">
+                                        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                                    </span>
                                     <div>
                                         <p class="text-xs font-extrabold text-red-700 uppercase mb-1">Catatan Admin</p>
                                         <p class="text-gray-800 italic">"{{ $booking->admin_notes }}"</p>
@@ -186,11 +188,13 @@
                                 </div>
                             </div>
                         @else
-                            <div class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+                            <div class="mt-6 p-4 bg-white border-2 border-[#001D5E] rounded-2xl">
                                 <div class="flex items-start gap-3">
-                                    <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5"></i>
+                                    <span class="p-1 rounded bg-[#001D5E] text-white flex items-center justify-center">
+                                        <i data-lucide="info" class="w-4 h-4"></i>
+                                    </span>
                                     <div>
-                                        <p class="text-xs font-extrabold text-blue-700 uppercase mb-1">Catatan Admin</p>
+                                        <p class="text-xs font-extrabold text-[#001D5E] uppercase mb-1">Catatan Admin</p>
                                         <p class="text-gray-800 italic">"{{ $booking->admin_notes }}"</p>
                                     </div>
                                 </div>

@@ -17,11 +17,14 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         // Cek jika user login DAN usertype == 'admin'
-        if (Auth::check() && Auth::user()->usertype == 'admin') {
+        if (Auth::check() && Auth::user()->isAdmin()) {
             return $next($request);
         }
 
-        // Jika bukan admin, lempar ke dashboard user atau home
-        return redirect('/dashboard')->with('error', 'Anda bukan Admin!');
+        if (Auth::check() && Auth::user()->isKaryawan()) {
+            return redirect()->route('karyawan.dashboard')->with('error', 'Akses hanya untuk Administrator.');
+        }
+
+        return redirect()->route('user.dashboard')->with('error', 'Akses hanya untuk Administrator.');
     }
 }

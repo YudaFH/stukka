@@ -6,7 +6,7 @@
     {{-- HERO SECTION --}}
     <div class="relative w-full h-[450px] md:h-[550px] bg-gray-900 group flex items-center">
         <img src="{{ $event->image }}" alt="{{ $event->title }}" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700">
-        <div class="absolute inset-0 bg-gradient-to-t from-[#001D5E] via-[#001D5E]/60 to-black/30"></div>
+        <div class="absolute inset-0 bg-[#001D5E]/80"></div>
 
         <div class="absolute top-24 left-4 md:left-8 z-30">
             <a href="{{ route('portfolio') }}" 
@@ -53,15 +53,15 @@
                         </p>
                         
                         {{-- Kolom Scope of Work --}}
-                        <div class="bg-blue-50 p-5 rounded-xl mt-6 border border-blue-100">
+                        <div class="bg-white p-5 rounded-xl mt-6 border-2 border-slate-300 shadow-sm">
                             <h4 class="font-bold text-[#001D5E] mb-3 flex items-center gap-2">
                                 <i data-lucide="check-circle" class="w-4 h-4 text-[#F7941D]"></i> Lingkup Pekerjaan (Scope of Work):
                             </h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
-                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Event Conceptualization</li>
-                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Venue Management</li>
-                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Show Management</li>
-                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Production & Logistics</li>
+                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-[#001D5E] rounded-full"></div> Event Conceptualization</li>
+                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-[#001D5E] rounded-full"></div> Venue Management</li>
+                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-[#001D5E] rounded-full"></div> Show Management</li>
+                                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-[#001D5E] rounded-full"></div> Production & Logistics</li>
                             </ul>
                         </div>
                     </div>

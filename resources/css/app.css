@@ -9,3 +9,7 @@ select.no-native-arrow {
     appearance: none;
     background-image: none;
 }
+
+[x-cloak] {
+    display: none !important;
+}

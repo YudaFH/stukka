@@ -4,8 +4,9 @@
 <div class="max-w-5xl mx-auto px-4 py-10">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-3xl font-black text-[#001D5E]">Tambah Project Baru</h2>
-        <a href="{{ route('admin.events.index') }}" class="text-gray-500 hover:text-[#001D5E] font-bold">
-            &larr; Kembali
+        <a href="{{ route('admin.events.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-slate-600"></i>
+            <span>Kembali</span>
         </a>
     </div>
 
@@ -49,7 +50,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
                     <label class="block mb-2 font-bold text-gray-700">Cover Utama (Poster/Banner)</label>
-                    <input type="file" name="image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-[#001D5E] hover:file:bg-blue-100" required>
+                    <input type="file" name="image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#001D5E] file:text-white hover:file:bg-blue-900 transition-colors" required>
                     <p class="text-xs text-gray-400 mt-1">Gambar yang muncul di halaman depan.</p>
                 </div>
             <div class="mb-8">
@@ -81,7 +82,7 @@
             </div>
             </div>
 
-            <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center gap-3">
+            <div class="mb-6 p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center gap-3 shadow-sm">
                 <input type="checkbox" name="is_featured" value="1" id="feat" class="w-5 h-5 text-[#001D5E] rounded">
                 <label for="feat" class="font-bold text-gray-700">Tampilkan di Halaman Depan (Featured)?</label>
             </div>

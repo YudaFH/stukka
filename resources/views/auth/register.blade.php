@@ -4,9 +4,6 @@
     <div class="min-h-screen pt-50 flex bg-white">
          {{-- Sisi Kiri (Desktop Only) --}}
          <div class="hidden lg:flex w-1/2 bg-[#001D5E] items-center justify-center relative overflow-hidden">
-             <div class="absolute top-0 right-0 w-96 h-96 bg-[#F7941D]/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
-             <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
-             
              <div class="relative z-20 px-16 text-white text-center">
                  <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-2xl">
                      <img 

@@ -1,21 +1,28 @@
 @extends('layouts.admin')
 
+@section('title', 'Testimoni Client')
+
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="space-y-6">
     
     {{-- Header --}}
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#001D5E]">Kelola Testimoni Client</h2>
-        <a href="{{ route('admin.events.index') }}" class="text-gray-500 hover:text-[#001D5E] font-bold flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-[#001D5E]">Kelola Testimoni Client</h1>
+            <p class="text-sm text-gray-500 mt-1">Ulasan kepuasan dan penilaian dari klien yang pernah bekerja sama dengan Stukka.</p>
+        </div>
+        <a href="{{ route('admin.events.index') }}" class="text-gray-700 hover:text-[#001D5E] font-bold flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border-2 border-slate-300 transition-colors self-start sm:self-auto whitespace-nowrap shrink-0">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Project
         </a>
     </div>
 
     {{-- Notifikasi Sukses --}}
     @if(session('success'))
-        <div class="bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
-            {{ session('success') }}
+        <div class="bg-white border-2 border-emerald-600 text-emerald-950 px-4 py-3 rounded-xl flex items-center gap-3 shadow-sm font-semibold">
+            <div class="p-1 rounded-lg bg-emerald-600 text-white">
+                <i data-lucide="check" class="w-4 h-4"></i>
+            </div>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
@@ -23,7 +30,7 @@
         
         {{-- BAGIAN 1: FORM TAMBAH TESTIMONI (Sebelah Kiri / Atas) --}}
         <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+            <div class="bg-white p-6 rounded-2xl border-2 border-slate-300 sticky top-24">
                 <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
                     <i data-lucide="message-square-plus" class="w-5 h-5 text-[#F7941D]"></i>
                     Tambah Testimoni
@@ -71,9 +78,9 @@
 
         {{-- BAGIAN 2: DAFTAR TESTIMONI (Sebelah Kanan / Bawah) --}}
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="p-6 border-b border-gray-100 bg-gray-50">
-                    <h3 class="font-bold text-gray-800">Daftar Testimoni ({{ $testimonials->count() }})</h3>
+            <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden">
+                <div class="p-6 border-b-2 border-slate-200 bg-slate-100">
+                    <h3 class="font-black text-slate-800">Daftar Testimoni ({{ $testimonials->count() }})</h3>
                 </div>
 
                 @if($testimonials->count() > 0)
@@ -84,7 +91,7 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
                                         <h4 class="font-bold text-[#001D5E] text-lg">{{ $testi->name }}</h4>
-                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">{{ $testi->role ?? 'Client' }}</span>
+                                        <span class="text-xs bg-[#001D5E] text-white px-2.5 py-0.5 rounded-md font-bold">{{ $testi->role ?? 'Client' }}</span>
                                     </div>
                                     
                                     {{-- Tampilan Bintang --}}
@@ -102,7 +109,7 @@
                                 <form action="{{ route('admin.testimonials.destroy', $testi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus testimoni dari {{ $testi->name }}?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50" title="Hapus">
+                                    <button type="submit" class="text-slate-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-red-600" title="Hapus">
                                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                                     </button>
                                 </form>

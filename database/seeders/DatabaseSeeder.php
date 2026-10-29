@@ -15,19 +15,38 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Buat 1 Akun Admin Default
-        User::factory()->create([
-            'name' => 'Admin Stukka',
-            'email' => 'admin@stukka.com',
-            'password' => Hash::make('password'), // Password: password
-            'usertype' => 'admin', // <--- PENTING! Set langsung jadi admin
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@stukka.com'],
+            [
+                'name' => 'Admin Stukka',
+                'password' => Hash::make('password'),
+                'usertype' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Buat 1 Akun Karyawan Default
+        User::updateOrCreate(
+            ['email' => 'karyawan@stukka.com'],
+            [
+                'name' => 'Budi Santoso',
+                'nip' => 'STK-2026-001',
+                'position' => 'Event Crew & Technician',
+                'password' => Hash::make('password'),
+                'usertype' => 'karyawan',
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Buat 1 Akun User Biasa (Untuk ngetes)
-        User::factory()->create([
-            'name' => 'User Biasa',
-            'email' => 'user@gmail.com',
-            'password' => Hash::make('password'),
-            'usertype' => 'user',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'user@gmail.com'],
+            [
+                'name' => 'User Biasa',
+                'password' => Hash::make('password'),
+                'usertype' => 'user',
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }

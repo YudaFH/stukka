@@ -42,13 +42,13 @@
                 <img src="{{ $event->image }}" class="w-32 mt-2 rounded">
             </div>
 
-            <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center gap-3">
+            <div class="mb-4 p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center gap-3 shadow-sm">
                 <input
                     type="checkbox"
                     name="is_featured"
                     value="1"
                     id="feat"
-                    class="w-5 h-5 rounded"
+                    class="w-5 h-5 rounded text-[#001D5E]"
                     {{ $event->is_featured ? 'checked' : '' }}
                 >
                 <label for="feat" class="font-bold text-gray-700">Tampilkan di Halaman Depan (Featured)?</label>

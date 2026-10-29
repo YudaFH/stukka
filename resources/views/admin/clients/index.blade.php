@@ -1,24 +1,26 @@
 @extends('layouts.admin')
 
+@section('title', 'Client Trust (Logo)')
+
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="space-y-6">
     
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-            <h2 class="text-3xl font-black text-[#001D5E]">Kelola Logo Client</h2>
+            <h1 class="text-2xl font-black text-[#001D5E]">Kelola Logo Client</h1>
             <p class="text-gray-500 text-sm mt-1">Mitra yang telah mempercayakan event mereka kepada Stukka.</p>
         </div>
-        <a href="{{ route('admin.index') }}" class="text-gray-500 hover:text-[#001D5E] font-bold flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 transition-all hover:shadow-md">
+        <a href="{{ route('admin.index') }}" class="text-gray-700 hover:text-[#001D5E] font-bold flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border-2 border-slate-300 transition-colors whitespace-nowrap shrink-0">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Dashboard
         </a>
     </div>
 
     {{-- Notifikasi Sukses --}}
     @if(session('success'))
-        <div class="bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-4 rounded-r-xl mb-8 flex items-center gap-3 shadow-sm animate-fade-in-down">
-            <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4"></i></div>
-            <span class="font-medium">{{ session('success') }}</span>
+        <div class="bg-white border-2 border-emerald-600 text-emerald-950 px-4 py-4 rounded-xl flex items-center gap-3 shadow-sm font-semibold">
+            <div class="bg-emerald-600 text-white p-1 rounded-lg"><i data-lucide="check" class="w-4 h-4"></i></div>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
@@ -26,7 +28,7 @@
         
         {{-- BAGIAN 1: FORM UPLOAD (Sticky di Kiri) --}}
         <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 sticky top-24">
+            <div class="bg-white p-6 rounded-2xl border-2 border-slate-300 sticky top-24">
                 <div class="border-b border-gray-100 pb-4 mb-4">
                     <h3 class="font-bold text-lg text-[#001D5E] flex items-center gap-2">
                         <i data-lucide="upload-cloud" class="w-5 h-5 text-[#F7941D]"></i>
@@ -51,7 +53,7 @@
                         <div class="relative group">
                             <input type="file" name="logo" id="logoInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" required onchange="previewImage(event)">
                             
-                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center group-hover:border-[#001D5E] group-hover:bg-blue-50 transition-all">
+                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center group-hover:border-[#001D5E] group-hover:bg-slate-100 transition-all">
                                 <i data-lucide="image-plus" class="w-8 h-8 text-gray-400 mx-auto mb-2 group-hover:text-[#001D5E]"></i>
                                 <p class="text-sm text-gray-500 font-medium group-hover:text-[#001D5E]">Klik untuk pilih gambar</p>
                                 <p class="text-xs text-gray-400 mt-1">Maks. 2MB</p>
@@ -74,10 +76,10 @@
 
         {{-- BAGIAN 2: GALERI LOGO (Kanan) --}}
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden min-h-[400px]">
-                <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                        <i data-lucide="grid" class="w-4 h-4 text-gray-400"></i>
+            <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden min-h-[400px]">
+                <div class="p-6 border-b-2 border-slate-200 bg-slate-100 flex justify-between items-center">
+                    <h3 class="font-black text-slate-800 flex items-center gap-2">
+                        <i data-lucide="grid" class="w-4 h-4 text-slate-500"></i>
                         Galeri Logo ({{ $clients->count() }})
                     </h3>
                 </div>

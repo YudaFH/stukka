@@ -7,6 +7,11 @@
 
         <title>{{ config('app.name', 'Stukka Events') }}</title>
 
+        <!-- Favicon Logo Stukka -->
+        <link rel="icon" type="image/png" href="{{ asset('images/LOGO_KK.png') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('images/LOGO_KK.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('images/LOGO_KK.png') }}">
+
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
@@ -20,9 +25,8 @@
             
             @include('layouts.navigation')
 
-            {{-- UBAH MAIN: Tambahkan 'flex-grow' --}}
-            {{-- flex-grow akan memaksa konten ini memenuhi ruang kosong, mendorong footer ke bawah --}}
-            <main class="flex-grow">
+            {{-- UBAH MAIN: Tambahkan 'flex-grow pb-20 md:pb-0' --}}
+            <main class="flex-grow pb-20 md:pb-0">
                 @yield('content')
             </main>
             
@@ -75,10 +79,10 @@
             <div>
               <h4 class="text-white font-bold mb-6">Connect</h4>
               <ul class="space-y-3 text-sm">
-                <li><a href="#" onclick="alert('Simulasi: Instagram')" class="hover:text-[#F7941D] transition-colors">Instagram</a></li>
-                <li><a href="#" onclick="alert('Simulasi: TikTok')" class="hover:text-[#F7941D] transition-colors">TikTok</a></li>
-                <li><a href="#" onclick="alert('Simulasi: LinkedIn')" class="hover:text-[#F7941D] transition-colors">LinkedIn</a></li>
-                <li><a href="#" onclick="alert('Simulasi: WhatsApp')" class="hover:text-[#F7941D] transition-colors">WhatsApp</a></li>
+                <li><a href="javascript:void(0)" onclick="notify.info('Mengarahkan ke akun Instagram resmi @stukkadigital', 'Media Sosial')" class="hover:text-[#F7941D] transition-colors">Instagram</a></li>
+                <li><a href="javascript:void(0)" onclick="notify.info('Mengarahkan ke akun TikTok resmi Stukka Events', 'Media Sosial')" class="hover:text-[#F7941D] transition-colors">TikTok</a></li>
+                <li><a href="javascript:void(0)" onclick="notify.info('Mengarahkan ke profil LinkedIn resmi Stukka Digital', 'Media Sosial')" class="hover:text-[#F7941D] transition-colors">LinkedIn</a></li>
+                <li><a href="javascript:void(0)" onclick="notify.info('Membuka tautan WhatsApp Customer Care Stukka', 'Customer Care')" class="hover:text-[#F7941D] transition-colors">WhatsApp</a></li>
               </ul>
             </div>
         </div>
@@ -89,7 +93,61 @@
       </div>
 </footer>
 
+            {{-- Mobile Bottom Bar untuk Website Umum --}}
+            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 z-50 px-3 py-1.5 shadow-[0_-4px_10px_rgba(0,0,0,0.06)]">
+                <div class="grid {{ Auth::check() && in_array(Auth::user()->usertype, ['admin', 'karyawan']) ? 'grid-cols-4' : 'grid-cols-3' }} items-center">
+                    {{-- 1. Home --}}
+                    <a href="{{ route('home') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('home') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('home') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="home" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[10px] mt-0.5">Home</span>
+                    </a>
+
+                    {{-- 2. Services --}}
+                    <a href="{{ route('services') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('services') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('services') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[10px] mt-0.5">Services</span>
+                    </a>
+
+                    {{-- 3. Portofolio --}}
+                    <a href="{{ route('portfolio') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('portfolio*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('portfolio*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[10px] mt-0.5">Portofolio</span>
+                    </a>
+
+                    {{-- 4. Akun / Dashboard (Khusus Admin / Karyawan jika login) --}}
+                    @auth
+                        @if(Auth::user()->usertype === 'karyawan')
+                            <a href="{{ route('karyawan.dashboard') }}" 
+                               class="flex flex-col items-center justify-center py-1 transition-colors text-[#F7941D] font-black">
+                                <div class="p-1 rounded-xl bg-[#F7941D] text-white">
+                                    <i data-lucide="scan-face" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] mt-0.5">Karyawan</span>
+                            </a>
+                        @elseif(Auth::user()->usertype === 'admin')
+                            <a href="{{ route('admin.index') }}" 
+                               class="flex flex-col items-center justify-center py-1 transition-colors text-[#001D5E] font-black">
+                                <div class="p-1 rounded-xl bg-[#001D5E] text-white">
+                                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] mt-0.5">Admin</span>
+                            </a>
+                        @endif
+                    @endauth
+                </div>
+            </nav>
         </div>
+
+        <x-toast-notification />
 
         <script>
             lucide.createIcons();
