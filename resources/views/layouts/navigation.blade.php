@@ -47,9 +47,20 @@
                         </a>
                     @elseif(Auth::user()->usertype === 'admin')
                         <a href="{{ route('admin.index') }}" 
-                           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-2 border-blue-500 transition-all">
-                            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-                            <span>Panel Admin</span>
+                           class="water-fill-btn group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-2 border-blue-500 transition-all overflow-hidden">
+                            {{-- Water Waves Layer --}}
+                            <span class="water-layer" aria-hidden="true">
+                                <span class="water-liquid-back"></span>
+                                <span class="water-liquid"></span>
+                                <span class="water-bubbles">
+                                    <span class="bubble b1"></span>
+                                    <span class="bubble b2"></span>
+                                </span>
+                            </span>
+                            <span class="relative z-10 inline-flex items-center gap-1.5">
+                                <span>Panel Admin</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"></i>
+                            </span>
                         </a>
                     @endif
 

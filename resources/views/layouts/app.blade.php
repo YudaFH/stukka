@@ -137,7 +137,7 @@
                             <a href="{{ route('admin.index') }}" 
                                class="flex flex-col items-center justify-center py-1 transition-colors text-[#001D5E] font-black">
                                 <div class="p-1 rounded-xl bg-[#001D5E] text-white">
-                                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
                                 </div>
                                 <span class="text-[10px] mt-0.5">Admin</span>
                             </a>

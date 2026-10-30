@@ -140,9 +140,21 @@
             <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
                 @if(Auth::check() && Auth::user()->usertype == 'admin')
                     <a href="{{ route('admin.index') }}" 
-                       class="inline-flex items-center justify-center px-10 py-4 text-base font-bold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg border-2 border-blue-400">
-                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-2"></i>
-                        Masuk ke Panel Admin
+                       class="water-fill-btn group relative inline-flex items-center justify-center px-10 py-4 text-base font-bold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg border-2 border-blue-400 overflow-hidden">
+                        {{-- Water Waves Layer --}}
+                        <span class="water-layer" aria-hidden="true">
+                            <span class="water-liquid-back"></span>
+                            <span class="water-liquid"></span>
+                            <span class="water-bubbles">
+                                <span class="bubble b1"></span>
+                                <span class="bubble b2"></span>
+                                <span class="bubble b3"></span>
+                            </span>
+                        </span>
+                        <span class="relative z-10 inline-flex items-center gap-2.5">
+                            <span>Masuk ke Panel Admin</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5"></i>
+                        </span>
                     </a>
                 @elseif(Auth::check() && Auth::user()->usertype == 'karyawan')
                     <a href="{{ route('karyawan.dashboard') }}" 
