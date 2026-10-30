@@ -47,16 +47,22 @@
                         </a>
                     @elseif(Auth::user()->usertype === 'admin')
                         <a href="{{ route('admin.index') }}" 
-                           class="water-fill-btn group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-2 border-blue-500 transition-all overflow-hidden">
-                            {{-- Water Waves Layer --}}
-                            <span class="water-layer" aria-hidden="true">
-                                <span class="water-liquid-back"></span>
-                                <span class="water-liquid"></span>
-                                <span class="water-bubbles">
-                                    <span class="bubble b1"></span>
-                                    <span class="bubble b2"></span>
-                                </span>
-                            </span>
+                           class="water-btn group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#001D5E] hover:border-sky-400 text-white shadow-sm border-2 border-blue-400/80 transition-all duration-300 overflow-hidden">
+                            <div class="water-tank" aria-hidden="true">
+                                <div class="water-rise">
+                                    <div class="water-wave wave-back">
+                                        <svg viewBox="0 0 1200 80" preserveAspectRatio="none">
+                                            <path d="M 0,30 C 150,60 350,0 500,30 C 650,60 850,0 1000,30 C 1150,60 1350,0 1500,30 L 1500,80 L 0,80 Z" fill="rgba(56, 189, 248, 0.55)"/>
+                                        </svg>
+                                    </div>
+                                    <div class="water-wave wave-front">
+                                        <svg viewBox="0 0 1200 80" preserveAspectRatio="none">
+                                            <path d="M 0,20 C 150,55 350,-5 500,20 C 650,55 850,-5 1000,20 C 1150,55 1350,-5 1500,20 L 1500,80 L 0,80 Z" fill="#2563eb"/>
+                                        </svg>
+                                    </div>
+                                    <div class="water-deep"></div>
+                                </div>
+                            </div>
                             <span class="relative z-10 inline-flex items-center gap-1.5">
                                 <span>Panel Admin</span>
                                 <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"></i>

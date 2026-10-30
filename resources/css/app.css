@@ -15,150 +15,126 @@ select.no-native-arrow {
 }
 
 /* =========================================================================
-   WATER FILLING (LIQUID) BUTTON ANIMATION
+   PREMIUM LIQUID WATER FILL ANIMATION
    ========================================================================= */
-.water-fill-btn {
+.water-btn {
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    transform: translateZ(0);
+    cursor: pointer;
+    background: linear-gradient(135deg, #001D5E 0%, #0d3b9e 100%);
+    transition: transform 0.15s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.water-fill-btn .water-layer {
+.water-btn:hover {
+    box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4), 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+.water-btn:active {
+    transform: scale(0.97);
+}
+
+/* Water Tank Overlay */
+.water-btn .water-tank {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 1;
     overflow: hidden;
     border-radius: inherit;
+    z-index: 2;
 }
 
-/* Background water wave (lighter / translucent cyan wave) */
-.water-fill-btn .water-liquid-back {
+/* Water Rise Body */
+.water-btn .water-rise {
     position: absolute;
-    left: -60%;
-    width: 220%;
-    bottom: -290%;
-    height: 320%;
-    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 45%, #0369a1 100%);
-    border-radius: 43% 41% 45% 39%;
-    transform: rotate(0deg);
-    transition: bottom 0.55s cubic-bezier(0.25, 1, 0.5, 1);
-    animation: waterSpinReverse 4.5s linear infinite;
-    opacity: 0.65;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    transform: translateY(105%);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
 }
 
-/* Foreground water wave (deep vibrant blue wave) */
-.water-fill-btn .water-liquid {
-    position: absolute;
-    left: -55%;
-    width: 210%;
-    bottom: -290%;
-    height: 320%;
-    background: linear-gradient(180deg, #60a5fa 0%, #2563eb 35%, #1d4ed8 100%);
-    border-radius: 40% 44% 41% 46%;
-    transform: rotate(0deg);
-    transition: bottom 0.55s cubic-bezier(0.25, 1, 0.5, 1);
-    animation: waterSpin 6s linear infinite;
-    opacity: 0.95;
-    pointer-events: none;
-    box-shadow: 0 -4px 14px rgba(56, 189, 248, 0.4);
+/* Active State: Water Surges Up to 100% */
+.water-btn.is-filling .water-rise {
+    transform: translateY(-10%) !important;
 }
 
-/* Gentle water presence on hover */
-.water-fill-btn:hover .water-liquid-back {
-    bottom: -245%;
-}
-.water-fill-btn:hover .water-liquid {
-    bottom: -250%;
-}
-
-/* Full water filling surge on click */
-.water-fill-btn.is-filling .water-liquid-back {
-    bottom: -40% !important;
-    transition: bottom 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.water-fill-btn.is-filling .water-liquid {
-    bottom: -45% !important;
-    transition: bottom 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* Glow and ripple wave upon filling */
-.water-fill-btn.is-filling {
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.7), 0 8px 20px rgba(37, 99, 235, 0.5) !important;
+.water-btn.is-filling {
     border-color: #38bdf8 !important;
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.8), 0 8px 25px rgba(37, 99, 235, 0.6) !important;
 }
 
-/* Bubbles inside liquid */
-.water-fill-btn .water-bubbles {
+/* Waves on Top of Water */
+.water-btn .water-wave {
     position: absolute;
-    inset: 0;
+    top: -24px;
+    left: 0;
+    width: 250%;
+    height: 32px;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
 }
-.water-fill-btn.is-filling .water-bubbles {
-    opacity: 1;
+
+.water-btn .water-wave svg {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-.water-fill-btn .bubble {
+
+.water-btn .water-wave.wave-front {
+    z-index: 2;
+    animation: waveMoveHorizontal 1.8s linear infinite;
+}
+
+.water-btn .water-wave.wave-back {
+    z-index: 1;
+    top: -27px;
+    animation: waveMoveHorizontalBack 2.4s linear infinite;
+}
+
+/* Solid Water Body Below the Wave Crests */
+.water-btn .water-deep {
     position: absolute;
-    bottom: -10px;
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 50%;
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
-}
-.water-fill-btn.is-filling .bubble.b1 {
-    width: 8px; height: 8px; left: 25%;
-    animation: bubbleRise 0.45s ease-out infinite;
-}
-.water-fill-btn.is-filling .bubble.b2 {
-    width: 6px; height: 6px; left: 55%;
-    animation: bubbleRise 0.4s ease-out 0.08s infinite;
-}
-.water-fill-btn.is-filling .bubble.b3 {
-    width: 10px; height: 10px; left: 75%;
-    animation: bubbleRise 0.5s ease-out 0.04s infinite;
+    top: 6px;
+    left: 0;
+    right: 0;
+    bottom: -30px;
+    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #001D5E 100%);
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
-@keyframes waterSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@keyframes waveMoveHorizontal {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-500px); }
 }
 
-@keyframes waterSpinReverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
+@keyframes waveMoveHorizontalBack {
+    0% { transform: translateX(-300px); }
+    100% { transform: translateX(0); }
 }
 
-@keyframes bubbleRise {
-    0% { transform: translateY(0) scale(0.5); opacity: 0; }
-    50% { opacity: 0.9; }
-    100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
-}
-
-/* Interactive Water Splash / Ripple at click location */
-.water-click-splash {
+/* Water Ripple / Droplet on Click */
+.water-ripple-drop {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(56, 189, 248, 0.6) 40%, rgba(37, 99, 235, 0) 75%);
     pointer-events: none;
-    z-index: 8;
+    z-index: 5;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(56, 189, 248, 0.5) 40%, rgba(37, 99, 235, 0) 70%);
     transform: translate(-50%, -50%) scale(0);
-    animation: waterSplashExpand 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+    animation: rippleExpand 0.5s ease-out forwards;
 }
 
-@keyframes waterSplashExpand {
+@keyframes rippleExpand {
     0% {
-        width: 10px;
-        height: 10px;
-        transform: translate(-50%, -50%) scale(0);
+        width: 0px;
+        height: 0px;
         opacity: 0.9;
     }
     100% {
-        width: 340px;
-        height: 340px;
-        transform: translate(-50%, -50%) scale(1);
+        width: 380px;
+        height: 380px;
         opacity: 0;
     }
 }
