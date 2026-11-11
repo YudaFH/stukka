@@ -9,6 +9,7 @@ use App\Models\EventExpense;
 use App\Models\ScheduledEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminScheduledEventController extends Controller
 {
@@ -91,54 +92,58 @@ class AdminScheduledEventController extends Controller
             'crew.*.role' => 'nullable|string|max:100',
         ]);
 
-        $event = ScheduledEvent::create([
-            'booking_id' => $validated['booking_id'] ?? null,
-            'title' => $validated['title'],
-            'event_type' => $validated['event_type'],
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'] ?? $validated['start_date'],
-            'start_time' => $validated['start_time'] ?? null,
-            'end_time' => $validated['end_time'] ?? null,
-            'location' => $validated['location'],
-            'venue_detail' => $validated['venue_detail'] ?? null,
-            'client_name' => $validated['client_name'],
-            'client_phone' => $validated['client_phone'] ?? null,
-            'client_email' => $validated['client_email'] ?? null,
-            'contract_amount' => $validated['contract_amount'],
-            'status' => $validated['status'],
-            'notes' => $validated['notes'] ?? null,
-        ]);
+        $event = DB::transaction(function () use ($validated) {
+            $event = ScheduledEvent::create([
+                'booking_id' => $validated['booking_id'] ?? null,
+                'title' => $validated['title'],
+                'event_type' => $validated['event_type'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'] ?? $validated['start_date'],
+                'start_time' => $validated['start_time'] ?? null,
+                'end_time' => $validated['end_time'] ?? null,
+                'location' => $validated['location'],
+                'venue_detail' => $validated['venue_detail'] ?? null,
+                'client_name' => $validated['client_name'],
+                'client_phone' => $validated['client_phone'] ?? null,
+                'client_email' => $validated['client_email'] ?? null,
+                'contract_amount' => $validated['contract_amount'],
+                'status' => $validated['status'],
+                'notes' => $validated['notes'] ?? null,
+            ]);
 
-        // Simpan Kru (Internal & Eksternal)
-        if (!empty($validated['crew'])) {
-            foreach ($validated['crew'] as $item) {
-                $type = ($item['crew_type'] ?? 'internal') === 'external' ? 'external' : 'internal';
-                if ($type === 'internal' && !empty($item['user_id'])) {
-                    EventCrew::create([
-                        'scheduled_event_id' => $event->id,
-                        'user_id' => $item['user_id'],
-                        'crew_type' => 'internal',
-                        'external_name' => null,
-                        'external_phone' => null,
-                        'role_in_event' => $item['role'] ?? 'Crew',
-                    ]);
-                } elseif ($type === 'external' && !empty($item['external_name'])) {
-                    EventCrew::create([
-                        'scheduled_event_id' => $event->id,
-                        'user_id' => null,
-                        'crew_type' => 'external',
-                        'external_name' => $item['external_name'],
-                        'external_phone' => $item['external_phone'] ?? null,
-                        'role_in_event' => $item['role'] ?? 'Crew',
-                    ]);
+            // Simpan Kru (Internal & Eksternal)
+            if (!empty($validated['crew'])) {
+                foreach ($validated['crew'] as $item) {
+                    $type = ($item['crew_type'] ?? 'internal') === 'external' ? 'external' : 'internal';
+                    if ($type === 'internal' && !empty($item['user_id'])) {
+                        EventCrew::create([
+                            'scheduled_event_id' => $event->id,
+                            'user_id' => $item['user_id'],
+                            'crew_type' => 'internal',
+                            'external_name' => null,
+                            'external_phone' => null,
+                            'role_in_event' => $item['role'] ?? 'Crew',
+                        ]);
+                    } elseif ($type === 'external' && !empty($item['external_name'])) {
+                        EventCrew::create([
+                            'scheduled_event_id' => $event->id,
+                            'user_id' => null,
+                            'crew_type' => 'external',
+                            'external_name' => $item['external_name'],
+                            'external_phone' => $item['external_phone'] ?? null,
+                            'role_in_event' => $item['role'] ?? 'Crew',
+                        ]);
+                    }
                 }
             }
-        }
 
-        // Jika dibuat dari booking, update status booking jadi approved
-        if (!empty($validated['booking_id'])) {
-            Booking::where('id', $validated['booking_id'])->update(['status' => 'approved']);
-        }
+            // Jika dibuat dari booking, update status booking jadi approved
+            if (!empty($validated['booking_id'])) {
+                Booking::where('id', $validated['booking_id'])->update(['status' => 'approved']);
+            }
+
+            return $event;
+        });
 
         return redirect()->route('admin.scheduled-events.show', $event->id)
             ->with('success', 'Jadwal event berhasil dibuat! Anda sekarang dapat menambahkan rincian keuangan & kru.');
@@ -192,49 +197,51 @@ class AdminScheduledEventController extends Controller
             'crew.*.role' => 'nullable|string|max:100',
         ]);
 
-        $event->update([
-            'title' => $validated['title'],
-            'event_type' => $validated['event_type'],
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'] ?? $validated['start_date'],
-            'start_time' => $validated['start_time'] ?? null,
-            'end_time' => $validated['end_time'] ?? null,
-            'location' => $validated['location'],
-            'venue_detail' => $validated['venue_detail'] ?? null,
-            'client_name' => $validated['client_name'],
-            'client_phone' => $validated['client_phone'] ?? null,
-            'client_email' => $validated['client_email'] ?? null,
-            'contract_amount' => $validated['contract_amount'],
-            'status' => $validated['status'],
-            'notes' => $validated['notes'] ?? null,
-        ]);
+        DB::transaction(function () use ($event, $validated) {
+            $event->update([
+                'title' => $validated['title'],
+                'event_type' => $validated['event_type'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'] ?? $validated['start_date'],
+                'start_time' => $validated['start_time'] ?? null,
+                'end_time' => $validated['end_time'] ?? null,
+                'location' => $validated['location'],
+                'venue_detail' => $validated['venue_detail'] ?? null,
+                'client_name' => $validated['client_name'],
+                'client_phone' => $validated['client_phone'] ?? null,
+                'client_email' => $validated['client_email'] ?? null,
+                'contract_amount' => $validated['contract_amount'],
+                'status' => $validated['status'],
+                'notes' => $validated['notes'] ?? null,
+            ]);
 
-        // Simpan / Perbarui Kru (Hapus daftar lama dan masukkan daftar terkini)
-        EventCrew::where('scheduled_event_id', $event->id)->delete();
-        if (!empty($validated['crew'])) {
-            foreach ($validated['crew'] as $item) {
-                $type = ($item['crew_type'] ?? 'internal') === 'external' ? 'external' : 'internal';
-                if ($type === 'internal' && !empty($item['user_id'])) {
-                    EventCrew::create([
-                        'scheduled_event_id' => $event->id,
-                        'user_id' => $item['user_id'],
-                        'crew_type' => 'internal',
-                        'external_name' => null,
-                        'external_phone' => null,
-                        'role_in_event' => $item['role'] ?? 'Crew',
-                    ]);
-                } elseif ($type === 'external' && !empty($item['external_name'])) {
-                    EventCrew::create([
-                        'scheduled_event_id' => $event->id,
-                        'user_id' => null,
-                        'crew_type' => 'external',
-                        'external_name' => $item['external_name'],
-                        'external_phone' => $item['external_phone'] ?? null,
-                        'role_in_event' => $item['role'] ?? 'Crew',
-                    ]);
+            // Simpan / Perbarui Kru (Hapus daftar lama dan masukkan daftar terkini)
+            EventCrew::where('scheduled_event_id', $event->id)->delete();
+            if (!empty($validated['crew'])) {
+                foreach ($validated['crew'] as $item) {
+                    $type = ($item['crew_type'] ?? 'internal') === 'external' ? 'external' : 'internal';
+                    if ($type === 'internal' && !empty($item['user_id'])) {
+                        EventCrew::create([
+                            'scheduled_event_id' => $event->id,
+                            'user_id' => $item['user_id'],
+                            'crew_type' => 'internal',
+                            'external_name' => null,
+                            'external_phone' => null,
+                            'role_in_event' => $item['role'] ?? 'Crew',
+                        ]);
+                    } elseif ($type === 'external' && !empty($item['external_name'])) {
+                        EventCrew::create([
+                            'scheduled_event_id' => $event->id,
+                            'user_id' => null,
+                            'crew_type' => 'external',
+                            'external_name' => $item['external_name'],
+                            'external_phone' => $item['external_phone'] ?? null,
+                            'role_in_event' => $item['role'] ?? 'Crew',
+                        ]);
+                    }
                 }
             }
-        }
+        });
 
         return redirect()->route('admin.scheduled-events.show', $event->id)
             ->with('success', 'Jadwal event dan kru berhasil diperbarui.');
