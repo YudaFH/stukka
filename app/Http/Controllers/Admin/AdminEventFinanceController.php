@@ -101,6 +101,7 @@ class AdminEventFinanceController extends Controller
         }
 
         $validated = $request->validate([
+            'payment_name' => 'nullable|string|max:255',
             'payment_date' => 'required|date',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string|max:50',
@@ -114,11 +115,17 @@ class AdminEventFinanceController extends Controller
             $receiptPath = $request->file('receipt_proof')->store('event_receipts', 'public');
         }
 
+        $paymentName = !empty($validated['payment_name'])
+            ? $validated['payment_name']
+            : ('Pembayaran ' . ($event->payments()->count() + 1));
+
         $event->payments()->create([
+            'payment_name' => $paymentName,
             'payment_date' => $validated['payment_date'],
             'amount' => $validated['amount'],
             'payment_method' => $validated['payment_method'],
             'reference_no' => $validated['reference_no'] ?? null,
+            'status' => 'paid',
             'receipt_proof' => $receiptPath,
             'notes' => $validated['notes'] ?? null,
         ]);
@@ -158,11 +165,15 @@ class AdminEventFinanceController extends Controller
 
         $validated = $request->validate([
             'category' => 'required|string|max:100',
-            'item_name' => 'required|string|max:255',
+            'item_name' => 'nullable|string|max:255',
+            'expense_name' => 'nullable|string|max:255',
             'vendor_name' => 'nullable|string|max:255',
             'amount' => 'required|numeric|min:1',
-            'is_paid' => 'required|boolean',
+            'is_paid' => 'nullable',
+            'status' => 'nullable|in:paid,unpaid',
             'paid_at' => 'nullable|date',
+            'payment_date' => 'nullable|date',
+            'due_date' => 'nullable|date',
             'payment_method' => 'nullable|string|max:50',
             'notes' => 'nullable|string',
             'invoice_proof' => 'nullable|image|mimes:jpeg,png,jpg,webp,pdf|max:5120',
@@ -173,24 +184,37 @@ class AdminEventFinanceController extends Controller
             $invoicePath = $request->file('invoice_proof')->store('event_invoices', 'public');
         }
 
-        $isPaid = (bool) $validated['is_paid'];
-        $paidAt = $isPaid ? ($validated['paid_at'] ?? now()) : null;
+        $itemName = $validated['item_name'] ?? $validated['expense_name'] ?? 'Pengeluaran Event';
+
+        $isPaid = false;
+        if (isset($validated['is_paid'])) {
+            $isPaid = filter_var($validated['is_paid'], FILTER_VALIDATE_BOOLEAN);
+        } elseif (isset($validated['status'])) {
+            $isPaid = ($validated['status'] === 'paid');
+        }
+
+        $paidAt = $isPaid ? ($validated['paid_at'] ?? $validated['payment_date'] ?? now()) : null;
+
+        $validCategory = in_array($validated['category'], ['sound', 'stage', 'catering', 'logistics', 'crew', 'venue', 'other'])
+            ? $validated['category']
+            : 'other';
 
         $event->expenses()->create([
-            'category' => $validated['category'],
-            'item_name' => $validated['item_name'],
+            'expense_name' => $itemName,
+            'category' => $validCategory,
             'vendor_name' => $validated['vendor_name'] ?? null,
             'amount' => $validated['amount'],
-            'is_paid' => $isPaid,
-            'paid_at' => $paidAt,
+            'status' => $isPaid ? 'paid' : 'unpaid',
+            'due_date' => $validated['due_date'] ?? null,
+            'payment_date' => $paidAt,
             'payment_method' => $validated['payment_method'] ?? null,
-            'invoice_proof' => $invoicePath,
+            'payment_proof' => $invoicePath,
             'notes' => $validated['notes'] ?? null,
         ]);
 
         $statusText = $isPaid ? 'Lunas' : 'Belum Lunas (Hutang Vendor)';
         return redirect()->route('admin.scheduled-events.show', ['scheduled_event' => $event->id, 'tab' => 'finance'])
-            ->with('success', "Biaya produksi '{$validated['item_name']}' ({$statusText}) berhasil dicatat.");
+            ->with('success', "Biaya produksi '{$itemName}' ({$statusText}) berhasil dicatat.");
     }
 
     /**
@@ -199,11 +223,12 @@ class AdminEventFinanceController extends Controller
     public function toggleExpenseStatus($id)
     {
         $expense = EventExpense::findOrFail($id);
-        $expense->is_paid = !$expense->is_paid;
-        $expense->paid_at = $expense->is_paid ? now() : null;
+        $newStatus = ($expense->status === 'paid' || $expense->is_paid) ? 'unpaid' : 'paid';
+        $expense->status = $newStatus;
+        $expense->payment_date = ($newStatus === 'paid') ? now() : null;
         $expense->save();
 
-        $statusText = $expense->is_paid ? 'LUNAS' : 'BELUM LUNAS (Hutang Vendor)';
+        $statusText = ($newStatus === 'paid') ? 'LUNAS' : 'BELUM LUNAS (Hutang Vendor)';
         return redirect()->route('admin.scheduled-events.show', ['scheduled_event' => $expense->scheduled_event_id, 'tab' => 'finance'])
             ->with('success', "Status biaya '{$expense->item_name}' diubah menjadi {$statusText}.");
     }
@@ -216,8 +241,9 @@ class AdminEventFinanceController extends Controller
         $expense = EventExpense::findOrFail($id);
         $eventId = $expense->scheduled_event_id;
 
-        if ($expense->invoice_proof) {
-            Storage::disk('public')->delete($expense->invoice_proof);
+        $proofFile = $expense->payment_proof ?: $expense->invoice_proof;
+        if ($proofFile) {
+            Storage::disk('public')->delete($proofFile);
         }
 
         $expense->delete();

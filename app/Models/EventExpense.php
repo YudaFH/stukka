@@ -13,15 +13,63 @@ class EventExpense extends Model
     protected $fillable = [
         'scheduled_event_id',
         'expense_name',
+        'item_name',
         'category',
         'vendor_name',
         'amount',
         'status',
+        'is_paid',
         'due_date',
         'payment_date',
+        'paid_at',
         'payment_proof',
+        'invoice_proof',
+        'payment_method',
         'notes',
     ];
+
+    /**
+     * Backward / View compatibility accessors & mutators
+     */
+    public function getItemNameAttribute(): string
+    {
+        return $this->attributes['expense_name'] ?? '';
+    }
+
+    public function setItemNameAttribute($value): void
+    {
+        $this->attributes['expense_name'] = $value;
+    }
+
+    public function getIsPaidAttribute(): bool
+    {
+        return ($this->attributes['status'] ?? 'unpaid') === 'paid';
+    }
+
+    public function setIsPaidAttribute($value): void
+    {
+        $this->attributes['status'] = $value ? 'paid' : 'unpaid';
+    }
+
+    public function getPaidAtAttribute()
+    {
+        return $this->payment_date;
+    }
+
+    public function setPaidAtAttribute($value): void
+    {
+        $this->payment_date = $value;
+    }
+
+    public function getInvoiceProofAttribute(): ?string
+    {
+        return $this->attributes['payment_proof'] ?? null;
+    }
+
+    public function setInvoiceProofAttribute($value): void
+    {
+        $this->attributes['payment_proof'] = $value;
+    }
 
     protected function casts(): array
     {

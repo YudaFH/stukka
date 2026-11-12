@@ -16,6 +16,7 @@ class EventPayment extends Model
         'amount',
         'payment_date',
         'payment_method',
+        'reference_no',
         'status',
         'receipt_proof',
         'notes',
