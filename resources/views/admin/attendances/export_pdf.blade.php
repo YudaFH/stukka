@@ -225,9 +225,28 @@
             font-weight: 600;
             margin-top: 3px;
         }
+        .sig-editable {
+            outline: none;
+            cursor: text;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .sig-editable:hover {
+            background-color: #f1f5f9;
+        }
+        .sig-editable:focus {
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 1.5px #3b82f6;
+        }
 
         /* Print Media Styles */
         @media print {
+            .sig-editable {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
             .no-print {
                 display: none !important;
             }
@@ -263,13 +282,16 @@
 
     {{-- Screen Action Bar --}}
     <div class="no-print">
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <a href="{{ route('admin.attendances.index') }}" class="btn btn-outline">
                 <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
                 <span>Kembali ke Rekap Absensi</span>
             </a>
             <span style="font-size: 13px; font-weight: 700; color: #64748b;">
                 Laporan Rekapitulasi Presensi: <strong style="color: #001D5E;">{{ $periodLabel }}</strong>
+            </span>
+            <span style="font-size: 11px; background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 4px 10px; border-radius: 8px; font-weight: 600;">
+                ✍️ Teks nama & jabatan penanda tangan di bawah dapat diklik langsung untuk diedit
             </span>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -402,17 +424,17 @@
         {{-- Signature Section --}}
         <div class="signature-section">
             <div class="sig-box">
-                <div class="sig-title">Diverifikasi Oleh,</div>
+                <div class="sig-title sig-editable" contenteditable="true" data-sig-key="att_sig_title_1" title="Klik untuk edit jabatan pembuat">Diverifikasi Oleh,</div>
                 <div class="sig-space"></div>
-                <div class="sig-name">Admin Personalia & HR</div>
-                <div class="sig-role">Stukka Digital Creative</div>
+                <div class="sig-name sig-editable" contenteditable="true" data-sig-key="att_sig_name_1" title="Klik untuk edit nama penanda tangan">Admin Personalia & HR</div>
+                <div class="sig-role sig-editable" contenteditable="true" data-sig-key="att_sig_role_1" title="Klik untuk edit unit/perusahaan">Stukka Digital Creative</div>
             </div>
 
             <div class="sig-box">
-                <div class="sig-title">Mengetahui & Menyetujui,</div>
+                <div class="sig-title sig-editable" contenteditable="true" data-sig-key="att_sig_title_2" title="Klik untuk edit jabatan penyetuju">Mengetahui & Menyetujui,</div>
                 <div class="sig-space"></div>
-                <div class="sig-name">Pimpinan Operasional</div>
-                <div class="sig-role">Direktur Stukka Creative</div>
+                <div class="sig-name sig-editable" contenteditable="true" data-sig-key="att_sig_name_2" title="Klik untuk edit nama penanda tangan">Pimpinan Operasional</div>
+                <div class="sig-role sig-editable" contenteditable="true" data-sig-key="att_sig_role_2" title="Klik untuk edit jabatan/perusahaan">Direktur Stukka Creative</div>
             </div>
         </div>
 
@@ -420,6 +442,18 @@
 
     <script>
         lucide.createIcons();
+
+        // Restore & persist edited signatures in localStorage
+        document.querySelectorAll('.sig-editable').forEach(el => {
+            const key = el.getAttribute('data-sig-key');
+            if (key) {
+                const saved = localStorage.getItem(key);
+                if (saved) el.innerText = saved;
+                el.addEventListener('input', () => {
+                    localStorage.setItem(key, el.innerText);
+                });
+            }
+        });
     </script>
 </body>
 </html>

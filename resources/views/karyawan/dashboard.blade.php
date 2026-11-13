@@ -32,10 +32,12 @@
         </div>
 
         {{-- Waktu & Tanggal Realtime --}}
-        <div class="flex md:flex-col items-center md:items-end justify-between pt-3 md:pt-0 border-t md:border-t-0 border-slate-200 shrink-0">
-            <p class="text-xs font-semibold text-gray-400">Waktu Sistem</p>
-            <p id="liveClock" class="text-2xl font-bold text-[#001D5E]">--:--:--</p>
-            <p class="text-xs font-medium text-slate-600 mt-0.5 whitespace-nowrap">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
+        <div class="pt-3 md:pt-0 border-t md:border-t-0 border-slate-200 flex flex-col md:items-end justify-center">
+            <div class="flex items-center justify-between md:justify-end gap-3 w-full">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Waktu Sistem</span>
+                <span id="liveClock" class="text-xl sm:text-2xl font-black text-[#001D5E] tracking-tight">--:--:-- WIB</span>
+            </div>
+            <p class="text-xs font-medium text-slate-500 mt-0.5 text-right w-full">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
         </div>
     </div>
 

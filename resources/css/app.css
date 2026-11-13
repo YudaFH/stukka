@@ -13,3 +13,15 @@ select.no-native-arrow {
 [x-cloak] {
     display: none !important;
 }
+
+/* Hilangkan tombol native reveal password bawaan Microsoft Edge & Webkit */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
+input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}

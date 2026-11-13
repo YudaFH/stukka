@@ -18,6 +18,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <script src="https://unpkg.com/lucide@latest"></script>
+        <style>
+            input::-ms-reveal, input::-ms-clear { display: none !important; }
+        </style>
     </head>
     <body class="font-sans antialiased text-gray-900">
         {{-- UBAH DIV INI: Tambahkan 'flex flex-col' --}}
