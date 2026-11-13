@@ -78,7 +78,8 @@
                             <button 
                                 type="button" 
                                 @click="show = !show" 
-                                class="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                                class="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                                style="right: 16px;"
                                 tabindex="-1"
                                 :title="show ? 'Sembunyikan password' : 'Lihat password'">
                                 <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
