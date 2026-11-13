@@ -13,12 +13,13 @@ class AdminTestimonialController extends Controller
 
     public function store(Request $request) {
         $data = $request->validate([
-            'name' => 'required',
-            'content' => 'required',
+            'name' => 'required|string|max:255',
+            'role' => 'nullable|string|max:255',
+            'content' => 'required|string',
             'stars' => 'required|integer|min:1|max:5',
         ]);
         \App\Models\Testimonial::create($data);
-        return back()->with('success', 'Testimoni ditambahkan!');
+        return back()->with('success', 'Testimoni berhasil ditambahkan!');
     }
 
     public function destroy($id) {

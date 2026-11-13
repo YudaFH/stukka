@@ -89,9 +89,13 @@
                         <div class="p-6 hover:bg-gray-50 transition-colors group">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <div class="flex items-center gap-2 mb-1">
+                                    <div class="flex items-center gap-2 mb-1 flex-wrap">
                                         <h4 class="font-bold text-[#001D5E] text-lg">{{ $testi->name }}</h4>
-                                        <span class="text-xs bg-[#001D5E] text-white px-2.5 py-0.5 rounded-md font-bold">{{ $testi->role ?? 'Client' }}</span>
+                                        @if($testi->role)
+                                            <span class="text-xs bg-[#001D5E] text-white px-2.5 py-0.5 rounded-md font-bold">{{ $testi->role }}</span>
+                                        @else
+                                            <span class="text-xs bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-md font-bold">Client</span>
+                                        @endif
                                     </div>
                                     
                                     {{-- Tampilan Bintang --}}

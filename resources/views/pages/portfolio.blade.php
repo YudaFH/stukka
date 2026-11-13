@@ -58,8 +58,8 @@
 
                         {{-- Image Link --}}
                         <a href="{{ route('portfolio.show', $event->id) }}" class="relative h-64 overflow-hidden bg-gray-200 block">
-                            <img src="{{ $event->image }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 @if($event->status == 'closed' || $event->status == 'finished') grayscale opacity-80 @endif">
-                            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                            <img src="{{ $event->image }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-colors"></div>
                         </a>
 
                         {{-- Content --}}

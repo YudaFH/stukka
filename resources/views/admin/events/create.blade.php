@@ -34,7 +34,8 @@
                 </div>
                 <div>
                     <label class="block mb-2 font-bold text-gray-700">Tanggal Pelaksanaan</label>
-                    <input type="text" name="date" class="w-full border-gray-300 rounded-xl shadow-sm" placeholder="Contoh: 20 Agustus 2024" required>
+                    <input type="text" name="date" class="w-full border-gray-300 rounded-xl shadow-sm" placeholder="Contoh: 20 Agustus 2024 atau 15 - 17 Mei 2024" required>
+                    <p class="text-xs text-gray-400 mt-1">Bebas teks: bisa tanggal tunggal atau rentang hari pelaksanaan.</p>
                 </div>
                 <div>
                     <label class="block mb-2 font-bold text-gray-700">Status Project</label>
