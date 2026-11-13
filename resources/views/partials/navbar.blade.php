@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between h-20">
             
             {{-- 1. LOGO --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-2 cursor-pointer">
+            <a href="{{ auth()->check() ? (auth()->user()->usertype === 'admin' ? route('admin.index') : route('karyawan.dashboard')) : route('login') }}" class="flex items-center gap-2 cursor-pointer" title="Login / Dashboard">
                 <img src="{{ asset('images/LOGO_KK.png') }}" 
                      alt="Stukka Events" 
                      class="h-12 w-auto object-contain">

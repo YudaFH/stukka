@@ -64,6 +64,7 @@
                                 class="w-full border-gray-300 rounded-xl focus:ring-[#001D5E] focus:border-[#001D5E]"
                                 placeholder="Contoh: 0812xxxxxxx"
                                 inputmode="numeric"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 pattern="^[0-9]{9,15}$"
                                 required>
                             <p class="mt-1 text-xs text-gray-500">Gunakan angka saja (9–15 digit).</p>

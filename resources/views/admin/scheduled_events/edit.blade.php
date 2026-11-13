@@ -167,8 +167,11 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">No. WhatsApp Klien</label>
-                    <input type="text" name="client_phone"
+                    <input type="tel" name="client_phone"
+                           inputmode="numeric"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                            value="{{ old('client_phone', $event->client_phone) }}"
+                           placeholder="08xxxxxxxxxx"
                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
                 </div>
 
@@ -282,7 +285,9 @@
                                            :required="item.crew_type === 'external'"
                                            placeholder="Nama Kru Luar / Vendor *"
                                            class="w-full px-3 py-2 text-xs bg-white border-2 border-amber-400 rounded-lg focus:outline-none focus:border-[#F7941D]">
-                                    <input type="text" :name="'crew[' + index + '][external_phone]'" x-model="item.external_phone"
+                                    <input type="tel" :name="'crew[' + index + '][external_phone]'" x-model="item.external_phone"
+                                           inputmode="numeric"
+                                           @input="item.external_phone = $event.target.value = $event.target.value.replace(/[^0-9]/g, '')"
                                            placeholder="No. WhatsApp / HP (opsional)"
                                            class="w-full px-3 py-2 text-xs bg-white border-2 border-slate-300 rounded-lg focus:outline-none focus:border-[#F7941D]">
                                 </div>

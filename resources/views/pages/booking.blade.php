@@ -79,7 +79,7 @@
                                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                          <i data-lucide="users" class="h-5 w-5 text-gray-400"></i>
                                      </div>
-                                     <input type="tel" id="whatsapp_number" name="whatsapp_number" class="block w-full pl-10 pr-3 py-3 border @error('whatsapp_number') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-[#F7941D] focus:border-[#F7941D] shadow-sm" placeholder="0812..." value="{{ old('whatsapp_number') }}" required>
+                                     <input type="tel" id="whatsapp_number" name="whatsapp_number" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="block w-full pl-10 pr-3 py-3 border @error('whatsapp_number') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-[#F7941D] focus:border-[#F7941D] shadow-sm" placeholder="0812..." value="{{ old('whatsapp_number') }}" required>
                                  </div>
                                  @error('whatsapp_number')
                                      <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

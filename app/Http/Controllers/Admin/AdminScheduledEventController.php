@@ -68,6 +68,20 @@ class AdminScheduledEventController extends Controller
             $request->merge(['contract_amount' => preg_replace('/[^0-9]/', '', (string) $request->contract_amount)]);
         }
 
+        if ($request->filled('client_phone')) {
+            $request->merge(['client_phone' => preg_replace('/[^0-9]/', '', (string) $request->client_phone)]);
+        }
+
+        if ($request->has('crew') && is_array($request->crew)) {
+            $crewInput = $request->crew;
+            foreach ($crewInput as $idx => $c) {
+                if (isset($c['external_phone'])) {
+                    $crewInput[$idx]['external_phone'] = preg_replace('/[^0-9]/', '', (string) $c['external_phone']);
+                }
+            }
+            $request->merge(['crew' => $crewInput]);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'event_type' => 'required|string|max:100',
@@ -172,6 +186,20 @@ class AdminScheduledEventController extends Controller
 
         if ($request->has('contract_amount')) {
             $request->merge(['contract_amount' => preg_replace('/[^0-9]/', '', (string) $request->contract_amount)]);
+        }
+
+        if ($request->filled('client_phone')) {
+            $request->merge(['client_phone' => preg_replace('/[^0-9]/', '', (string) $request->client_phone)]);
+        }
+
+        if ($request->has('crew') && is_array($request->crew)) {
+            $crewInput = $request->crew;
+            foreach ($crewInput as $idx => $c) {
+                if (isset($c['external_phone'])) {
+                    $crewInput[$idx]['external_phone'] = preg_replace('/[^0-9]/', '', (string) $c['external_phone']);
+                }
+            }
+            $request->merge(['crew' => $crewInput]);
         }
 
         $validated = $request->validate([
