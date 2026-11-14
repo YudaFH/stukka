@@ -17,12 +17,56 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
     
     <style>
         /* Custom Scrollbar untuk Sidebar */
         .sidebar-scroll::-webkit-scrollbar { width: 6px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: #001540; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #F7941D; border-radius: 10px; }
+
+        /* Flatpickr Stukka Styling */
+        .flatpickr-calendar {
+            font-family: inherit;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 29, 94, 0.15), 0 8px 10px -6px rgba(0, 29, 94, 0.1);
+            border: 2px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .flatpickr-months {
+            background: #001D5E;
+            color: #fff;
+            padding: 4px 0;
+        }
+        .flatpickr-months .flatpickr-month {
+            color: #fff;
+            fill: #fff;
+        }
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-weight: 700;
+        }
+        .flatpickr-weekdays {
+            background: #001542;
+        }
+        span.flatpickr-weekday {
+            color: #F7941D !important;
+            font-weight: 700;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange {
+            background: #001D5E !important;
+            border-color: #001D5E !important;
+            color: #fff !important;
+            font-weight: 700;
+        }
+        .flatpickr-day.today {
+            border-color: #F7941D;
+        }
+        .flatpickr-day.inRange {
+            background: #e0e7ff !important;
+            box-shadow: -5px 0 0 #e0e7ff, 5px 0 0 #e0e7ff;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">

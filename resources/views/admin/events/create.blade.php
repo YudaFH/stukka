@@ -32,10 +32,37 @@
                     <label class="block mb-2 font-bold text-gray-700">Lokasi Event</label>
                     <input type="text" name="location" class="w-full border-gray-300 rounded-xl shadow-sm" required>
                 </div>
-                <div>
-                    <label class="block mb-2 font-bold text-gray-700">Tanggal Pelaksanaan</label>
-                    <input type="text" name="date" class="w-full border-gray-300 rounded-xl shadow-sm" placeholder="Contoh: 20 Agustus 2024 atau 15 - 17 Mei 2024" required>
-                    <p class="text-xs text-gray-400 mt-1">Bebas teks: bisa tanggal tunggal atau rentang hari pelaksanaan.</p>
+                <div x-data="eventDatePicker('{{ old('date', '') }}')" class="relative">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block font-bold text-gray-700">Tanggal Pelaksanaan *</label>
+                        <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-500 hover:text-[#001D5E]">
+                            <input type="checkbox" x-model="isRange" @change="toggleMode()" class="rounded border-gray-300 text-[#001D5E] focus:ring-0 w-3.5 h-3.5">
+                            <span>Rentang Hari?</span>
+                        </label>
+                    </div>
+                    <div class="relative flex items-center">
+                        <input type="text"
+                               name="date"
+                               x-ref="dateInput"
+                               x-model="dateValue"
+                               @click="openCalendar()"
+                               placeholder="Pilih dari kalender (contoh: 10 Agustus 2024)"
+                               required
+                               class="w-full pr-11 border-gray-300 rounded-xl shadow-sm focus:border-[#001D5E] focus:ring focus:ring-blue-200 text-sm font-medium cursor-pointer">
+                        <button type="button"
+                                @click="openCalendar()"
+                                class="absolute right-3 p-1 text-slate-400 hover:text-[#001D5E] transition-colors cursor-pointer"
+                                title="Buka Kalender">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                        <input type="hidden" x-ref="pickerTrigger">
+                    </div>
+                    <div class="flex items-center justify-between mt-1 text-xs">
+                        <span class="text-slate-500" x-text="isRange ? '📅 Mode Rentang: Klik 2 tanggal (mulai & selesai) di kalender' : '📅 Klik kalender untuk memilih tanggal'"></span>
+                        <button type="button" x-show="dateValue" @click="clearDate()" class="text-red-500 hover:underline cursor-pointer">Reset</button>
+                    </div>
                 </div>
                 <div>
                     <label class="block mb-2 font-bold text-gray-700">Status Project</label>
@@ -97,3 +124,126 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function() {
+    function registerEventDatePicker() {
+        if (typeof Alpine === 'undefined' || !Alpine.data) return;
+
+        Alpine.data('eventDatePicker', (initialValue = '') => ({
+            dateValue: initialValue || '',
+            isRange: false,
+            fp: null,
+            indoMonths: [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ],
+
+            init() {
+                this.$nextTick(() => {
+                    this.setupFlatpickr();
+                });
+            },
+
+            setupFlatpickr() {
+                if (this.fp) {
+                    try { this.fp.destroy(); } catch (e) {}
+                    this.fp = null;
+                }
+
+                if (typeof flatpickr === 'undefined') return;
+
+                const self = this;
+                const localeConfig = (window.flatpickr && window.flatpickr.l10ns && window.flatpickr.l10ns.id) 
+                    ? window.flatpickr.l10ns.id 
+                    : 'id';
+
+                this.fp = flatpickr(this.$refs.pickerTrigger, {
+                    positionElement: this.$refs.dateInput,
+                    mode: this.isRange ? 'range' : 'single',
+                    locale: localeConfig,
+                    dateFormat: 'Y-m-d',
+                    disableMobile: true,
+                    onChange(selectedDates) {
+                        if (self.isRange) {
+                            if (selectedDates.length === 2) {
+                                self.dateValue = self.formatIndoRange(selectedDates[0], selectedDates[1]);
+                                self.fp.close();
+                            } else if (selectedDates.length === 1) {
+                                self.dateValue = self.formatIndoDate(selectedDates[0]);
+                            }
+                        } else if (selectedDates.length >= 1) {
+                            self.dateValue = self.formatIndoDate(selectedDates[0]);
+                            self.fp.close();
+                        }
+                    }
+                });
+            },
+
+            toggleMode() {
+                this.setupFlatpickr();
+                this.openCalendar();
+            },
+
+            openCalendar() {
+                if (!this.fp) {
+                    this.setupFlatpickr();
+                }
+                if (this.fp) {
+                    if (this.dateValue) {
+                        const parts = this.dateValue.trim().split(' ');
+                        if (parts.length === 3) {
+                            const day = parseInt(parts[0], 10);
+                            const mIdx = this.indoMonths.indexOf(parts[1]);
+                            const yr = parseInt(parts[2], 10);
+                            if (!isNaN(day) && mIdx !== -1 && !isNaN(yr)) {
+                                this.fp.setDate(new Date(yr, mIdx, day), false);
+                            }
+                        }
+                    }
+                    this.fp.open();
+                }
+            },
+
+            clearDate() {
+                this.dateValue = '';
+                if (this.fp) {
+                    this.fp.clear();
+                }
+            },
+
+            formatIndoDate(d) {
+                if (!d) return '';
+                const date = new Date(d);
+                return `${date.getDate()} ${this.indoMonths[date.getMonth()]} ${date.getFullYear()}`;
+            },
+
+            formatIndoRange(d1, d2) {
+                if (!d1) return '';
+                if (!d2 || d1.getTime() === d2.getTime()) return this.formatIndoDate(d1);
+
+                const date1 = new Date(d1);
+                const date2 = new Date(d2);
+
+                if (date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()) {
+                    return `${date1.getDate()} - ${date2.getDate()} ${this.indoMonths[date1.getMonth()]} ${date1.getFullYear()}`;
+                }
+
+                if (date1.getFullYear() === date2.getFullYear()) {
+                    return `${date1.getDate()} ${this.indoMonths[date1.getMonth()]} - ${date2.getDate()} ${this.indoMonths[date2.getMonth()]} ${date1.getFullYear()}`;
+                }
+
+                return `${this.formatIndoDate(date1)} - ${this.formatIndoDate(date2)}`;
+            }
+        }));
+    }
+
+    if (window.Alpine) {
+        registerEventDatePicker();
+    } else {
+        document.addEventListener('alpine:init', registerEventDatePicker);
+    }
+})();
+</script>
+@endpush
