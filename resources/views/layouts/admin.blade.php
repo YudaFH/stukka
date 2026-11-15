@@ -80,14 +80,11 @@
             
             {{-- Logo Area --}}
             <div class="h-20 flex items-center px-5 border-b border-blue-900 bg-[#001542]">
-                <a href="{{ route('home') }}" class="w-full flex items-center justify-between font-black text-xl tracking-tight hover:opacity-90 transition-opacity">
+                <a href="{{ route('home') }}" class="w-full flex items-center font-black text-xl tracking-tight hover:opacity-90 transition-opacity">
                     <div class="flex items-center gap-3">
                         <img src="{{ asset('images/LOGO_KK.png') }}" alt="Stukka Logo" class="h-9 w-auto object-contain">
                         <span class="text-white font-black tracking-tight">STUKKA</span>
                     </div>
-                    <span class="text-[10px] font-black px-2.5 py-1 rounded-md bg-blue-900 text-[#F7941D] border border-blue-800 uppercase tracking-wider shadow-xs">
-                        CMS
-                    </span>
                 </a>
             </div>
 
