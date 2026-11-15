@@ -29,7 +29,7 @@
                             <span>Rentang Hari?</span>
                         </label>
                     </div>
-                    <div class="relative flex items-center">
+                    <div class="relative">
                         <input type="text"
                                name="date"
                                x-ref="dateInput"
@@ -40,14 +40,13 @@
                                required
                                class="w-full pr-11 border-gray-300 rounded-xl shadow-sm focus:border-[#001D5E] focus:ring focus:ring-blue-200 text-sm font-medium cursor-pointer">
                         <button type="button"
-                                @click="openCalendar()"
-                                class="absolute right-3 p-1 text-slate-400 hover:text-[#001D5E] transition-colors cursor-pointer"
+                                @click.stop="openCalendar()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-[#001D5E] transition-colors cursor-pointer"
                                 title="Buka Kalender">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </button>
-                        <input type="hidden" x-ref="pickerTrigger">
                     </div>
                     <div class="flex items-center justify-between mt-1 text-xs">
                         <span class="text-slate-500" x-text="isRange ? '📅 Mode Rentang: Klik 2 tanggal di kalender' : '📅 Klik kalender untuk memilih tanggal'"></span>
@@ -97,7 +96,7 @@
 
         Alpine.data('eventDatePicker', (initialValue = '') => ({
             dateValue: initialValue || '',
-            isRange: false,
+            isRange: (initialValue && typeof initialValue === 'string' && initialValue.includes('-')) ? true : false,
             fp: null,
             indoMonths: [
                 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -105,10 +104,6 @@
             ],
 
             init() {
-                // If initial value contains hyphen, auto-detect range
-                if (this.dateValue && this.dateValue.includes(' - ')) {
-                    this.isRange = true;
-                }
                 this.$nextTick(() => {
                     this.setupFlatpickr();
                 });
@@ -123,30 +118,50 @@
                 if (typeof flatpickr === 'undefined') return;
 
                 const self = this;
-                const localeConfig = (window.flatpickr && window.flatpickr.l10ns && window.flatpickr.l10ns.id) 
-                    ? window.flatpickr.l10ns.id 
+                const localeConfig = (window.flatpickr && window.flatpickr.l10ns && (window.flatpickr.l10ns.id || window.flatpickr.l10ns.Indonesian)) 
+                    ? (window.flatpickr.l10ns.id || window.flatpickr.l10ns.Indonesian) 
                     : 'id';
 
-                this.fp = flatpickr(this.$refs.pickerTrigger, {
-                    positionElement: this.$refs.dateInput,
+                const parsedDefault = this.parseIndoDate(this.dateValue);
+
+                this.fp = flatpickr(this.$refs.dateInput, {
                     mode: this.isRange ? 'range' : 'single',
                     locale: localeConfig,
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'j F Y',
                     disableMobile: true,
+                    allowInput: true,
+                    defaultDate: parsedDefault,
                     onChange(selectedDates) {
                         if (self.isRange) {
                             if (selectedDates.length === 2) {
-                                self.dateValue = self.formatIndoRange(selectedDates[0], selectedDates[1]);
+                                const formatted = self.formatIndoRange(selectedDates[0], selectedDates[1]);
+                                self.dateValue = formatted;
+                                self.$refs.dateInput.value = formatted;
                                 self.fp.close();
                             } else if (selectedDates.length === 1) {
-                                self.dateValue = self.formatIndoDate(selectedDates[0]);
+                                const formatted = self.formatIndoDate(selectedDates[0]);
+                                self.dateValue = formatted;
+                                self.$refs.dateInput.value = formatted;
                             }
                         } else if (selectedDates.length >= 1) {
-                            self.dateValue = self.formatIndoDate(selectedDates[0]);
+                            const formatted = self.formatIndoDate(selectedDates[0]);
+                            self.dateValue = formatted;
+                            self.$refs.dateInput.value = formatted;
                             self.fp.close();
+                        }
+                    },
+                    onClose(selectedDates) {
+                        if (self.isRange && selectedDates.length === 2) {
+                            const formatted = self.formatIndoRange(selectedDates[0], selectedDates[1]);
+                            self.dateValue = formatted;
+                            self.$refs.dateInput.value = formatted;
                         }
                     }
                 });
+
+                if (this.dateValue) {
+                    this.$refs.dateInput.value = this.dateValue;
+                }
             },
 
             toggleMode() {
@@ -159,16 +174,9 @@
                     this.setupFlatpickr();
                 }
                 if (this.fp) {
-                    if (this.dateValue) {
-                        const parts = this.dateValue.trim().split(' ');
-                        if (parts.length === 3) {
-                            const day = parseInt(parts[0], 10);
-                            const mIdx = this.indoMonths.indexOf(parts[1]);
-                            const yr = parseInt(parts[2], 10);
-                            if (!isNaN(day) && mIdx !== -1 && !isNaN(yr)) {
-                                this.fp.setDate(new Date(yr, mIdx, day), false);
-                            }
-                        }
+                    const parsed = this.parseIndoDate(this.dateValue);
+                    if (parsed) {
+                        this.fp.setDate(parsed, false);
                     }
                     this.fp.open();
                 }
@@ -176,9 +184,55 @@
 
             clearDate() {
                 this.dateValue = '';
+                if (this.$refs.dateInput) {
+                    this.$refs.dateInput.value = '';
+                }
                 if (this.fp) {
                     this.fp.clear();
                 }
+            },
+
+            parseIndoDate(val) {
+                if (!val || typeof val !== 'string') return null;
+                const trimmed = val.trim();
+                if (trimmed.includes('-')) {
+                    const parts = trimmed.split('-').map(s => s.trim());
+                    if (parts.length === 2) {
+                        const endParts = parts[1].split(' ');
+                        if (endParts.length === 3) {
+                            const day2 = parseInt(endParts[0], 10);
+                            const mIdx2 = this.indoMonths.indexOf(endParts[1]);
+                            const yr2 = parseInt(endParts[2], 10);
+                            if (!isNaN(day2) && mIdx2 !== -1 && !isNaN(yr2)) {
+                                const d2 = new Date(yr2, mIdx2, day2);
+                                const startParts = parts[0].split(' ');
+                                if (startParts.length === 1) {
+                                    const day1 = parseInt(startParts[0], 10);
+                                    if (!isNaN(day1)) {
+                                        return [new Date(yr2, mIdx2, day1), d2];
+                                    }
+                                } else if (startParts.length === 3) {
+                                    const day1 = parseInt(startParts[0], 10);
+                                    const mIdx1 = this.indoMonths.indexOf(startParts[1]);
+                                    const yr1 = parseInt(startParts[2], 10);
+                                    if (!isNaN(day1) && mIdx1 !== -1 && !isNaN(yr1)) {
+                                        return [new Date(yr1, mIdx1, day1), d2];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                const parts = trimmed.split(' ');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const mIdx = this.indoMonths.indexOf(parts[1]);
+                    const yr = parseInt(parts[2], 10);
+                    if (!isNaN(day) && mIdx !== -1 && !isNaN(yr)) {
+                        return new Date(yr, mIdx, day);
+                    }
+                }
+                return null;
             },
 
             formatIndoDate(d) {
