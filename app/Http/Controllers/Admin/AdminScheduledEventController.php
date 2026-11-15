@@ -52,7 +52,7 @@ class AdminScheduledEventController extends Controller
 
     public function create(Request $request)
     {
-        $employees = User::where('usertype', 'karyawan')->orderBy('name')->get();
+        $employees = User::where('usertype', '!=', 'user')->orderBy('name')->get();
         $booking = null;
 
         if ($request->has('booking_id')) {
@@ -166,7 +166,7 @@ class AdminScheduledEventController extends Controller
     public function show($id)
     {
         $event = ScheduledEvent::with(['crewAssignments.user', 'payments', 'expenses', 'booking'])->findOrFail($id);
-        $employees = User::where('usertype', 'karyawan')->orderBy('name')->get();
+        $employees = User::where('usertype', '!=', 'user')->orderBy('name')->get();
         $expenseCategories = EventExpense::getCategories();
 
         return view('admin.scheduled_events.show', compact('event', 'employees', 'expenseCategories'));
@@ -175,7 +175,7 @@ class AdminScheduledEventController extends Controller
     public function edit($id)
     {
         $event = ScheduledEvent::with('crewAssignments.user')->findOrFail($id);
-        $employees = User::where('usertype', 'karyawan')->orderBy('name')->get();
+        $employees = User::where('usertype', '!=', 'user')->orderBy('name')->get();
 
         return view('admin.scheduled_events.edit', compact('event', 'employees'));
     }

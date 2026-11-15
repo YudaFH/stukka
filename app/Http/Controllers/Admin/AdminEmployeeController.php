@@ -15,8 +15,9 @@ class AdminEmployeeController extends Controller
     {
         $search = $request->input('search');
         $status = $request->input('status');
+        $role = $request->input('role');
 
-        $query = User::where('usertype', 'karyawan');
+        $query = User::where('usertype', '!=', 'user');
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($search) {
@@ -35,14 +36,28 @@ class AdminEmployeeController extends Controller
             }
         }
 
-        $employees = $query->latest()->paginate(15)->withQueryString();
+        if ($request->filled('role')) {
+            if ($role === 'full_access') {
+                $query->where(function ($q) {
+                    $q->where('role', 'full_access')->orWhere('usertype', 'admin');
+                });
+            } else {
+                $query->where('role', $role);
+            }
+        }
 
-        return view('admin.employees.index', compact('employees', 'search', 'status'));
+        $employees = $query->orderByRaw("CASE WHEN id = 1 THEN 0 ELSE 1 END, id DESC")
+            ->paginate(15)
+            ->withQueryString();
+        $roles = User::getRoles();
+
+        return view('admin.employees.index', compact('employees', 'search', 'status', 'role', 'roles'));
     }
 
     public function create()
     {
-        return view('admin.employees.create');
+        $roles = User::getRoles();
+        return view('admin.employees.create', compact('roles'));
     }
 
     public function store(Request $request)
@@ -52,6 +67,7 @@ class AdminEmployeeController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'nip' => 'nullable|string|max:50|unique:users',
             'position' => 'nullable|string|max:100',
+            'role' => 'required|string|in:full_access,content_management,event_finance,field_staff',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -60,29 +76,33 @@ class AdminEmployeeController extends Controller
             'email' => $validated['email'],
             'nip' => $validated['nip'],
             'position' => $validated['position'],
-            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
             'usertype' => 'karyawan',
+            'password' => Hash::make($validated['password']),
             'email_verified_at' => now(),
         ]);
 
-        return redirect()->route('admin.employees.index')->with('success', 'Karyawan baru berhasil ditambahkan!');
+        $roleName = User::getRoles()[$validated['role']]['name'] ?? $validated['role'];
+        return redirect()->route('admin.employees.index')->with('success', 'Karyawan baru berhasil ditambahkan dengan role ' . $roleName . '!');
     }
 
     public function edit($id)
     {
-        $employee = User::where('usertype', 'karyawan')->findOrFail($id);
-        return view('admin.employees.edit', compact('employee'));
+        $employee = User::where('usertype', '!=', 'user')->findOrFail($id);
+        $roles = User::getRoles();
+        return view('admin.employees.edit', compact('employee', 'roles'));
     }
 
     public function update(Request $request, $id)
     {
-        $employee = User::where('usertype', 'karyawan')->findOrFail($id);
+        $employee = User::where('usertype', '!=', 'user')->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($employee->id)],
             'nip' => ['nullable', 'string', 'max:50', Rule::unique('users')->ignore($employee->id)],
             'position' => 'nullable|string|max:100',
+            'role' => 'required|string|in:full_access,content_management,event_finance,field_staff',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -91,18 +111,31 @@ class AdminEmployeeController extends Controller
         $employee->nip = $validated['nip'];
         $employee->position = $validated['position'];
 
+        // Jangan ubah role ID 1 (Super Admin utama)
+        if ($employee->id !== 1) {
+            $employee->role = $validated['role'];
+        }
+
         if ($request->filled('password')) {
             $employee->password = Hash::make($validated['password']);
         }
 
         $employee->save();
 
-        return redirect()->route('admin.employees.index')->with('success', 'Data karyawan berhasil diperbarui!');
+        return redirect()->route('admin.employees.index')->with('success', 'Data karyawan dan role berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $employee = User::where('usertype', 'karyawan')->findOrFail($id);
+        $employee = User::where('usertype', '!=', 'user')->findOrFail($id);
+
+        if ($employee->id === 1) {
+            return back()->with('error', 'Akun Utama Administrator tidak dapat dihapus.');
+        }
+
+        if ($employee->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
 
         // Hapus foto wajah jika ada
         if ($employee->face_photo && Storage::disk('public')->exists($employee->face_photo)) {
@@ -116,7 +149,7 @@ class AdminEmployeeController extends Controller
 
     public function resetFace($id)
     {
-        $employee = User::where('usertype', 'karyawan')->findOrFail($id);
+        $employee = User::where('usertype', '!=', 'user')->findOrFail($id);
 
         if ($employee->face_photo && Storage::disk('public')->exists($employee->face_photo)) {
             Storage::disk('public')->delete($employee->face_photo);

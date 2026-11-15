@@ -21,8 +21,9 @@
         </div>
     </div>
 
-    {{-- 4 METRIK UTAMA OPERASIONAL (Solid Icons & High-Contrast Cards) --}}
+    {{-- METRIK UTAMA SESUAI HAK AKSES ROLE --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @if(Auth::user()->canManageEventFinance())
         {{-- 1. Jadwal Event Aktif --}}
         <a href="{{ route('admin.scheduled-events.index') }}" 
            class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 transition-all block group">
@@ -52,7 +53,9 @@
             </p>
             <p class="text-xs text-slate-500 mt-1">Margin rata-rata: <strong class="text-slate-700">{{ $globalMargin }}%</strong></p>
         </a>
+        @endif
 
+        @if(Auth::user()->canManageAttendance())
         {{-- 3. Presensi Karyawan Hari Ini --}}
         <a href="{{ route('admin.attendances.index') }}" 
            class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 transition-all block group">
@@ -70,7 +73,9 @@
                 <span class="text-amber-600 font-bold">{{ $lateCount }} Terlambat</span>
             </p>
         </a>
+        @endif
 
+        @if(Auth::user()->canManageEmployees())
         {{-- 4. Manajemen Karyawan --}}
         <a href="{{ route('admin.employees.index') }}" 
            class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 transition-all block group">
@@ -83,13 +88,46 @@
             <p class="text-2xl font-black text-[#001D5E] mt-3">
                 {{ $totalEmployees }} <span class="text-sm font-bold text-slate-500">Staf</span>
             </p>
-            <p class="text-xs text-slate-500 mt-1">Kelola data & biometrik</p>
+            <p class="text-xs text-slate-500 mt-1">Kelola data, role & biometrik</p>
         </a>
+        @endif
+
+        @if(Auth::user()->canManageContent() && !Auth::user()->isFullAccess())
+        {{-- Card Khusus Content Management jika bukan Full Access --}}
+        <a href="{{ route('admin.events.index') }}" 
+           class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 transition-all block group">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-500 uppercase tracking-wider">Portofolio Project</span>
+                <div class="w-10 h-10 rounded-xl bg-[#001D5E] text-white shadow-sm flex items-center justify-center">
+                    <i data-lucide="briefcase" class="w-5 h-5 text-[#F7941D]"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-[#001D5E] group-hover:text-[#F7941D] transition-colors mt-3">
+                {{ $totalProjects }} Project
+            </p>
+            <p class="text-xs text-slate-500 mt-1">Showcase halaman depan</p>
+        </a>
+
+        <a href="{{ route('admin.clients.index') }}" 
+           class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 transition-all block group">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-500 uppercase tracking-wider">Client Trust</span>
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white shadow-sm flex items-center justify-center">
+                    <i data-lucide="building-2" class="w-5 h-5"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-[#001D5E] group-hover:text-[#F7941D] transition-colors mt-3">
+                {{ $totalClients }} Klien
+            </p>
+            <p class="text-xs text-slate-500 mt-1">Logo mitra & instansi</p>
+        </a>
+        @endif
     </div>
 
     {{-- DUA KOLOM SEIMBANG: JADWAL EVENT & LIVE PRESENSI --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 @if(Auth::user()->canManageEventFinance() && Auth::user()->canManageAttendance()) lg:grid-cols-2 @endif gap-6">
 
+        @if(Auth::user()->canManageEventFinance())
         {{-- 1. Jadwal Event Terdekat & Berlangsung --}}
         <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-6 space-y-4 flex flex-col justify-between">
             <div>
@@ -179,7 +217,9 @@
                 @endif
             </div>
         </div>
+        @endif
 
+        @if(Auth::user()->canManageAttendance())
         {{-- 2. Presensi Staf Hari Ini --}}
         <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-6 space-y-4 flex flex-col justify-between">
             <div>
@@ -241,9 +281,11 @@
                 @endif
             </div>
         </div>
+        @endif
 
     </div>
 
+    @if(Auth::user()->canManageContent())
     {{-- Ringkasan Portofolio & Konten Publik --}}
     <div class="p-4 rounded-2xl bg-white border-2 border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between text-xs gap-3">
         <span class="font-bold text-slate-600">Konten Portofolio Website:</span>
@@ -261,6 +303,7 @@
             </a>
         </div>
     </div>
+    @endif
 
 </div>
 @endsection

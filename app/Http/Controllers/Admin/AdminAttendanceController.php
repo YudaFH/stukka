@@ -44,7 +44,7 @@ class AdminAttendanceController extends Controller
 
         $attendances = $query->paginate(20)->withQueryString();
 
-        $employees = User::where('usertype', 'karyawan')->orderBy('name')->get();
+        $employees = User::where('usertype', '!=', 'user')->orderBy('name')->get();
         $settings = AttendanceSetting::getSettings();
 
         // Statistik hari ini
@@ -79,7 +79,7 @@ class AdminAttendanceController extends Controller
         $attendances = $this->getFilteredAttendances($request);
         $periodLabel = $this->getPeriodLabel($request);
         $filterUser = $request->filled('user_id') ? User::find($request->user_id) : null;
-        $totalEmployees = User::where('usertype', 'karyawan')->count();
+        $totalEmployees = User::where('usertype', '!=', 'user')->count();
 
         $cleanPeriod = preg_replace('/[^A-Za-z0-9\-]/', '_', $periodLabel);
         $filename = 'Laporan-Presensi-Stukka-' . $cleanPeriod . '-' . date('Ymd_His') . '.xls';
@@ -108,7 +108,7 @@ class AdminAttendanceController extends Controller
         $attendances = $this->getFilteredAttendances($request);
         $periodLabel = $this->getPeriodLabel($request);
         $filterUser = $request->filled('user_id') ? User::find($request->user_id) : null;
-        $totalEmployees = User::where('usertype', 'karyawan')->count();
+        $totalEmployees = User::where('usertype', '!=', 'user')->count();
         $totalHadir = $attendances->count();
         $totalOnTime = $attendances->where('status', 'on_time')->count();
         $totalLate = $attendances->where('status', 'late')->count();

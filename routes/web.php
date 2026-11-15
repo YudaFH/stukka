@@ -127,7 +127,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
         // 4. Presensi Karyawan Hari Ini
         $today = \Carbon\Carbon::today()->toDateString();
-        $totalEmployees = \App\Models\User::where('usertype', 'karyawan')->count();
+        $totalEmployees = \App\Models\User::where('usertype', '!=', 'user')->count();
         $todayAttendances = \App\Models\Attendance::with('user')
             ->where('date', $today)
             ->get();
@@ -159,49 +159,50 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ));
     })->name('index');
 
-    // B. KELOLA PORTOFOLIO (Resource)
-    Route::resource('events', AdminEventController::class);
+    // B. KELOLA KONTEN WEBSITE (Content Management)
+    Route::middleware('admin:content')->group(function () {
+        Route::resource('events', AdminEventController::class);
+        Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
+        Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
+        Route::delete('/clients/{id}', [AdminClientController::class, 'destroy'])->name('clients.destroy');
+        Route::get('/testimonials', [AdminTestimonialController::class, 'index'])->name('testimonials.index');
+        Route::post('/testimonials', [AdminTestimonialController::class, 'store'])->name('testimonials.store');
+        Route::delete('/testimonials/{id}', [AdminTestimonialController::class, 'destroy'])->name('testimonials.destroy');
+    });
 
-    // C. KELOLA CLIENT TRUST (Logo)
-    Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
-    Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
-    Route::delete('/clients/{id}', [AdminClientController::class, 'destroy'])->name('clients.destroy');
+    // C. JADWAL EVENT & KEUANGAN (Event & Finansial)
+    Route::middleware('admin:event_finance')->group(function () {
+        Route::get('/bookings', function () {
+            return redirect()->route('admin.scheduled-events.index');
+        })->name('bookings.index');
+        Route::get('/scheduled-events/export/excel', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'exportExcel'])->name('scheduled-events.export.excel');
+        Route::get('/scheduled-events/export/pdf', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'exportPdf'])->name('scheduled-events.export.pdf');
+        Route::get('/scheduled-events/{id}/print', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'printSingleEvent'])->name('scheduled-events.print');
+        Route::get('/scheduled-events/convert/{bookingId}', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'convertFromBooking'])->name('scheduled-events.convert');
+        Route::resource('scheduled-events', \App\Http\Controllers\Admin\AdminScheduledEventController::class);
 
-    // D. KELOLA TESTIMONI
-    Route::get('/testimonials', [AdminTestimonialController::class, 'index'])->name('testimonials.index');
-    Route::post('/testimonials', [AdminTestimonialController::class, 'store'])->name('testimonials.store');
-    Route::delete('/testimonials/{id}', [AdminTestimonialController::class, 'destroy'])->name('testimonials.destroy');
+        Route::get('/finance', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'index'])->name('finance.index');
+        Route::post('/finance/events/{eventId}/payment', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storePayment'])->name('finance.payment.store');
+        Route::delete('/finance/payments/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyPayment'])->name('finance.payment.destroy');
+        Route::post('/finance/events/{eventId}/expense', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storeExpense'])->name('finance.expense.store');
+        Route::post('/finance/expenses/{id}/toggle-status', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'toggleExpenseStatus'])->name('finance.expense.toggle-status');
+        Route::delete('/finance/expenses/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyExpense'])->name('finance.expense.destroy');
+    });
 
-    // E. KELOLA BOOKING (Dialihkan ke Jadwal Event & Kru)
-    Route::get('/bookings', function () {
-        return redirect()->route('admin.scheduled-events.index');
-    })->name('bookings.index');
+    // D. KELOLA KARYAWAN (Full Access)
+    Route::middleware('admin:employees')->group(function () {
+        Route::resource('employees', \App\Http\Controllers\Admin\AdminEmployeeController::class);
+        Route::post('/employees/{id}/reset-face', [\App\Http\Controllers\Admin\AdminEmployeeController::class, 'resetFace'])->name('employees.reset-face');
+    });
 
-    // F. KELOLA KARYAWAN
-    Route::resource('employees', \App\Http\Controllers\Admin\AdminEmployeeController::class);
-    Route::post('/employees/{id}/reset-face', [\App\Http\Controllers\Admin\AdminEmployeeController::class, 'resetFace'])->name('employees.reset-face');
-
-    // G. REKAP ABSENSI & PENGATURAN
-    Route::get('/attendances/export/excel', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'exportExcel'])->name('attendances.export.excel');
-    Route::get('/attendances/export/pdf', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'exportPdf'])->name('attendances.export.pdf');
-    Route::get('/attendances', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendances.index');
-    Route::get('/attendances/settings', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'settingsView'])->name('attendances.settings.view');
-    Route::post('/attendances/settings', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'updateSettings'])->name('attendances.settings');
-
-    // H. JADWAL EVENT OPERASIONAL & KRU
-    Route::get('/scheduled-events/export/excel', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'exportExcel'])->name('scheduled-events.export.excel');
-    Route::get('/scheduled-events/export/pdf', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'exportPdf'])->name('scheduled-events.export.pdf');
-    Route::get('/scheduled-events/{id}/print', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'printSingleEvent'])->name('scheduled-events.print');
-    Route::get('/scheduled-events/convert/{bookingId}', [\App\Http\Controllers\Admin\AdminScheduledEventController::class, 'convertFromBooking'])->name('scheduled-events.convert');
-    Route::resource('scheduled-events', \App\Http\Controllers\Admin\AdminScheduledEventController::class);
-
-    // I. PERHITUNGAN KEUANGAN PER EVENT (Biaya Produksi Vendor & Pembayaran Klien)
-    Route::get('/finance', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'index'])->name('finance.index');
-    Route::post('/finance/events/{eventId}/payment', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storePayment'])->name('finance.payment.store');
-    Route::delete('/finance/payments/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyPayment'])->name('finance.payment.destroy');
-    Route::post('/finance/events/{eventId}/expense', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storeExpense'])->name('finance.expense.store');
-    Route::post('/finance/expenses/{id}/toggle-status', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'toggleExpenseStatus'])->name('finance.expense.toggle-status');
-    Route::delete('/finance/expenses/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyExpense'])->name('finance.expense.destroy');
+    // E. REKAP ABSENSI & PENGATURAN (Full Access)
+    Route::middleware('admin:attendance')->group(function () {
+        Route::get('/attendances/export/excel', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'exportExcel'])->name('attendances.export.excel');
+        Route::get('/attendances/export/pdf', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'exportPdf'])->name('attendances.export.pdf');
+        Route::get('/attendances', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendances.index');
+        Route::get('/attendances/settings', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'settingsView'])->name('attendances.settings.view');
+        Route::post('/attendances/settings', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'updateSettings'])->name('attendances.settings');
+    });
 });
 
 

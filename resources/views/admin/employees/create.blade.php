@@ -67,6 +67,69 @@
                 </div>
             </div>
 
+            {{-- Role / Hak Akses Akun --}}
+            <div class="pt-3 border-t-2 border-slate-100" x-data="{ selectedRole: '{{ old('role', 'field_staff') }}' }">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Hak Akses / Role Akun *</label>
+                <p class="text-xs text-gray-500 mb-3">Tentukan fitur yang dapat diakses oleh akun ini di dalam sistem Stukka.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {{-- 1. Full Access --}}
+                    <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
+                           :class="selectedRole === 'full_access' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="radio" name="role" value="full_access" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                        <div class="ml-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-[#001D5E]">Full Access</span>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-purple-600 text-white">Admin</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Akses penuh ke semua fitur admin CMS, portofolio, keuangan, karyawan, dan absensi.</p>
+                        </div>
+                    </label>
+
+                    {{-- 2. Event & Finansial --}}
+                    <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
+                           :class="selectedRole === 'event_finance' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="radio" name="role" value="event_finance" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                        <div class="ml-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-[#001D5E]">Event & Finansial</span>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-600 text-white">Operasional</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Kelola jadwal event, alokasi kru, pembayaran klien, pengeluaran & laporan keuangan.</p>
+                        </div>
+                    </label>
+
+                    {{-- 3. Content Management --}}
+                    <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
+                           :class="selectedRole === 'content_management' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="radio" name="role" value="content_management" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                        <div class="ml-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-[#001D5E]">Content Management</span>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-blue-600 text-white">Konten Web</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Kelola portofolio project, showcase foto lapangan, logo client trust, dan testimoni.</p>
+                        </div>
+                    </label>
+
+                    {{-- 4. Kru Lapangan (Staff Biasa) --}}
+                    <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
+                           :class="selectedRole === 'field_staff' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="radio" name="role" value="field_staff" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                        <div class="ml-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-slate-800">Kru Lapangan</span>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-500 text-white">Staff Biasa</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Hanya akses Portal Karyawan untuk absensi selfie GPS & melihat jadwal tugas event.</p>
+                        </div>
+                    </label>
+                </div>
+                @error('role')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- Grid Password --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t-2 border-slate-100">
                 <div>

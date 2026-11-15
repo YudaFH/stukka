@@ -65,9 +65,15 @@ class AuthenticatedSessionController extends Controller
             $request->session()->forget('url.intended');
         }
 
-        // Role-based dashboard redirection (Hanya Admin dan Karyawan)
+        // Role-based dashboard redirection
         $user = Auth::user();
-        if ($user->isAdmin()) {
+        if ($user->hasAdminAccess()) {
+            if ($user->canManageContent() && !$user->canManageEventFinance() && !$user->isFullAccess()) {
+                return redirect()->intended(route('admin.events.index'));
+            }
+            if ($user->canManageEventFinance() && !$user->canManageContent() && !$user->isFullAccess()) {
+                return redirect()->intended(route('admin.scheduled-events.index'));
+            }
             return redirect()->intended(route('admin.index'));
         }
 
