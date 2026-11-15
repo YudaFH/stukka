@@ -79,12 +79,10 @@
         <aside class="w-64 bg-[#001D5E] text-white flex-shrink-0 hidden md:flex flex-col shadow-2xl z-20">
             
             {{-- Logo Area --}}
-            <div class="h-20 flex items-center px-5 border-b border-blue-900 bg-[#001542]">
-                <a href="{{ route('home') }}" class="w-full flex items-center font-black text-xl tracking-tight hover:opacity-90 transition-opacity">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/LOGO_KK.png') }}" alt="Stukka Logo" class="h-9 w-auto object-contain">
-                        <span class="text-white font-black tracking-tight">STUKKA</span>
-                    </div>
+            <div class="h-20 flex items-center justify-center px-4 border-b border-blue-900 bg-[#001542]">
+                <a href="{{ route('home') }}" class="w-full flex items-center justify-center gap-3 font-black text-xl tracking-tight hover:opacity-90 transition-opacity">
+                    <img src="{{ asset('images/LOGO_KK.png') }}" alt="Stukka Logo" class="h-9 w-auto object-contain">
+                    <span class="text-white font-black tracking-tight">STUKKA</span>
                 </a>
             </div>
 
