@@ -237,9 +237,9 @@
 
                 {{-- TOMBOL UTAMA PRESENSI (MULAI SAAT DIKLIK, CUKUP SEKALI) --}}
                 <button type="button" id="btn-start-action" onclick="handleStartAttendanceClick()"
-                        class="w-full py-4 rounded-2xl bg-[#001D5E] hover:bg-blue-900 border-2 border-[#001138] text-white font-black text-sm sm:text-base shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i data-lucide="camera" class="w-5 h-5 text-[#F7941D]" id="btn-action-icon"></i>
-                    <span id="btn-action-text">MULAI PRESENSI MASUK (WAJAH & LOKASI)</span>
+                        class="w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-[#001D5E] hover:bg-blue-900 border-2 border-[#001138] text-white font-black text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="camera" class="w-5 h-5 text-[#F7941D] shrink-0" id="btn-action-icon"></i>
+                    <span id="btn-action-text" class="text-center tracking-wide">MULAI PRESENSI MASUK</span>
                 </button>
 
             </div>
@@ -586,9 +586,10 @@
             document.getElementById('already-done-title').innerText = 'Presensi Masuk Hari Ini Sudah Selesai!';
             document.getElementById('already-done-desc').innerText = 'Anda sudah tercatat presensi masuk hari ini. Silakan pilih menu Absen Akhir (Pulang) jika sudah selesai jam kerja.';
             btnStartAction.disabled = true;
-            btnStartAction.className = 'w-full py-4 rounded-2xl bg-emerald-700 opacity-60 cursor-not-allowed text-white font-black text-sm flex items-center justify-center gap-2';
+            btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-700 opacity-60 cursor-not-allowed text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2.5';
             btnActionText.innerText = 'SUDAH SELESAI ABSEN MASUK';
             statusDesc.innerText = 'Presensi masuk hari ini sudah tuntas.';
+            if (btnActionIcon) btnActionIcon.classList.remove('animate-pulse');
             return;
         }
 
@@ -597,9 +598,10 @@
             document.getElementById('already-done-title').innerText = 'Presensi Pulang Hari Ini Sudah Selesai!';
             document.getElementById('already-done-desc').innerText = 'Anda sudah berhasil melakukan presensi pulang hari ini. Terima kasih atas kerja keras Anda!';
             btnStartAction.disabled = true;
-            btnStartAction.className = 'w-full py-4 rounded-2xl bg-[#001D5E] opacity-60 cursor-not-allowed text-white font-black text-sm flex items-center justify-center gap-2';
+            btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-[#001D5E] opacity-60 cursor-not-allowed text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2.5';
             btnActionText.innerText = 'SUDAH SELESAI ABSEN PULANG';
             statusDesc.innerText = 'Presensi hari ini sudah lengkap 100%.';
+            if (btnActionIcon) btnActionIcon.classList.remove('animate-pulse');
             return;
         }
 
@@ -608,9 +610,10 @@
             document.getElementById('already-done-title').innerText = 'Belum Melakukan Absen Masuk!';
             document.getElementById('already-done-desc').innerText = 'Anda wajib melakukan Absen Awal (Masuk) terlebih dahulu sebelum dapat mencatat absen pulang.';
             btnStartAction.disabled = true;
-            btnStartAction.className = 'w-full py-4 rounded-2xl bg-slate-300 opacity-60 cursor-not-allowed text-slate-700 font-black text-sm flex items-center justify-center gap-2';
-            btnActionText.innerText = 'LAKUKAN ABSEN MASUK TERLEBIH DAHULU';
+            btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-slate-300 opacity-60 cursor-not-allowed text-slate-700 font-black text-xs sm:text-sm flex items-center justify-center gap-2.5';
+            btnActionText.innerText = 'LAKUKAN ABSEN MASUK DULU';
             statusDesc.innerText = 'Silakan klik tab Absen Awal (Masuk).';
+            if (btnActionIcon) btnActionIcon.classList.remove('animate-pulse');
             return;
         }
 
@@ -618,23 +621,32 @@
 
         if (!isGpsReady) {
             btnStartAction.disabled = true;
-            btnStartAction.className = 'w-full py-4 rounded-2xl bg-slate-300 opacity-60 cursor-not-allowed text-slate-700 font-black text-sm flex items-center justify-center gap-2';
-            btnActionText.innerText = 'AKTIFKAN LOKASI (GPS) UNTUK MELANJUTKAN';
+            btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-slate-300 opacity-60 cursor-not-allowed text-slate-700 font-black text-xs sm:text-sm flex items-center justify-center gap-2.5';
+            btnActionText.innerText = 'AKTIFKAN LOKASI (GPS)';
             statusDesc.innerText = 'Menunggu izin akses GPS perangkat Anda...';
+            if (btnActionIcon) btnActionIcon.classList.remove('animate-pulse');
             return;
         }
 
         btnStartAction.disabled = false;
-        btnStartAction.className = 'w-full py-4 rounded-2xl bg-[#001D5E] hover:bg-blue-900 border-2 border-[#001138] text-white font-black text-sm sm:text-base shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer';
+        btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-[#001D5E] hover:bg-blue-900 border-2 border-[#001138] text-white font-black text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer';
         
         if (currentMode === 'in') {
             btnActionText.innerText = isCameraActive 
-                ? 'KAMERA SEDANG MENCOCOKKAN WAJAH...' 
-                : 'MULAI PRESENSI MASUK SEKARANG';
+                ? 'SEDANG MENCOCOKKAN WAJAH...' 
+                : 'MULAI PRESENSI MASUK';
         } else {
             btnActionText.innerText = isCameraActive 
-                ? 'KAMERA SEDANG MENCOCOKKAN WAJAH...' 
-                : 'MULAI PRESENSI PULANG SEKARANG';
+                ? 'SEDANG MENCOCOKKAN WAJAH...' 
+                : 'MULAI PRESENSI PULANG';
+        }
+
+        if (btnActionIcon) {
+            if (isCameraActive) {
+                btnActionIcon.classList.add('animate-pulse');
+            } else {
+                btnActionIcon.classList.remove('animate-pulse');
+            }
         }
 
         if (!isCameraActive) {
@@ -804,6 +816,11 @@
     async function executeSingleAttendance(score) {
         if (isSubmitting) return;
         isSubmitting = true;
+
+        btnStartAction.disabled = true;
+        btnStartAction.className = 'w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-blue-900 opacity-80 cursor-wait text-white font-black text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2.5';
+        btnActionText.innerText = 'MEMPROSES PRESENSI...';
+        if (btnActionIcon) btnActionIcon.classList.remove('animate-pulse');
 
         statusCard.className = 'p-3.5 rounded-2xl bg-blue-50 border-2 border-blue-400 text-center transition-colors';
         statusText.innerHTML = `
