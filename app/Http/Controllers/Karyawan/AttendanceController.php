@@ -81,9 +81,12 @@ class AttendanceController extends Controller
             'longitude' => 'required|numeric',
             'location_name' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:500',
+            'work_summary' => 'nullable|string|max:5000',
+            'work_file' => 'nullable|file|max:20480',
         ], [
             'latitude.required' => 'Akses lokasi (GPS) wajib diaktifkan pada browser/perangkat Anda.',
             'longitude.required' => 'Akses lokasi (GPS) wajib diaktifkan pada browser/perangkat Anda.',
+            'work_file.max' => 'Ukuran lampiran bukti kerja maksimal 20 MB.',
         ]);
 
         $user = Auth::user();
@@ -237,6 +240,22 @@ class AttendanceController extends Controller
 
             if (!$isWithinOffice && empty($attendance->notes)) {
                 $attendance->notes = 'Absen Pulang di Luar Kantor (Jarak: ' . round($distance) . 'm)';
+            }
+
+            // Simpan Laporan Pekerjaan Hari Ini & File Lampiran (Khusus Absen Pulang)
+            if ($request->filled('work_summary')) {
+                $attendance->work_summary = $request->input('work_summary');
+            }
+
+            if ($request->hasFile('work_file')) {
+                $file = $request->file('work_file');
+                $workFolder = 'attendance_reports/' . date('Y-m');
+                $originalName = $file->getClientOriginalName();
+                $cleanName = time() . '_' . $user->id . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
+                $workFilePath = $file->storeAs($workFolder, $cleanName, 'public');
+
+                $attendance->work_file = $workFilePath;
+                $attendance->work_file_name = $originalName;
             }
 
             $attendance->save();

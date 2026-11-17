@@ -27,6 +27,9 @@ class Attendance extends Model
         'status',
         'face_match_score',
         'notes',
+        'work_summary',
+        'work_file',
+        'work_file_name',
     ];
 
     protected function casts(): array

@@ -128,7 +128,7 @@ class User extends Authenticatable
 
     public function canManageAttendance(): bool
     {
-        return $this->isFullAccess();
+        return $this->isFullAccess() || $this->role === self::ROLE_EVENT_FINANCE;
     }
 
     public function hasAdminAccess(): bool

@@ -255,6 +255,25 @@
                             @endif
                         </div>
                     @endif
+
+                    {{-- Laporan Pekerjaan Pulang & Lampiran --}}
+                    @if($att->work_summary || $att->work_file)
+                        <div class="pt-2 border-t border-slate-100 space-y-1.5 text-xs">
+                            <span class="text-[10px] font-bold uppercase text-slate-400 block">Laporan Kerja Pulang:</span>
+                            @if($att->work_summary)
+                                <p class="text-gray-800 text-xs bg-slate-50 p-2 rounded-lg border border-slate-200 font-medium whitespace-pre-line">
+                                    {{ $att->work_summary }}
+                                </p>
+                            @endif
+                            @if($att->work_file)
+                                <a href="{{ asset('storage/' . $att->work_file) }}" target="_blank" download="{{ $att->work_file_name ?? 'lampiran' }}"
+                                   class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-[#001D5E] border border-blue-200 text-xs font-bold hover:bg-[#001D5E] hover:text-white transition-colors">
+                                    <i data-lucide="paperclip" class="w-3.5 h-3.5 text-[#F7941D]"></i>
+                                    <span class="truncate max-w-[200px]">{{ $att->work_file_name ?? 'Unduh Lampiran' }}</span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -275,6 +294,7 @@
                             <th class="py-3 px-4">Lokasi</th>
                             <th class="py-3 px-4">Skor Wajah</th>
                             <th class="py-3 px-4">Foto Bukti</th>
+                            <th class="py-3 px-4">Laporan Kerja Pulang</th>
                             <th class="py-3 px-4">Catatan</th>
                         </tr>
                     </thead>
@@ -380,6 +400,27 @@
                                             <span class="text-xs text-slate-400 font-bold">-</span>
                                         @endif
                                     </div>
+                                </td>
+                                <td class="py-3 px-4 text-xs">
+                                    @if($att->work_summary || $att->work_file)
+                                        <div class="space-y-1.5 min-w-[200px] max-w-xs">
+                                            @if($att->work_summary)
+                                                <p class="text-gray-800 font-medium whitespace-pre-line text-xs bg-slate-50 p-2 rounded-lg border border-slate-200 line-clamp-3" title="{{ $att->work_summary }}">
+                                                    {{ $att->work_summary }}
+                                                </p>
+                                            @endif
+                                            @if($att->work_file)
+                                                <a href="{{ asset('storage/' . $att->work_file) }}" target="_blank" download="{{ $att->work_file_name ?? 'lampiran' }}"
+                                                   class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-[#001D5E] border border-blue-200 text-[11px] font-bold hover:bg-[#001D5E] hover:text-white transition-colors"
+                                                   title="Unduh Lampiran: {{ $att->work_file_name }}">
+                                                    <i data-lucide="paperclip" class="w-3.5 h-3.5 text-[#F7941D]"></i>
+                                                    <span class="truncate max-w-[140px]">{{ $att->work_file_name ?? 'Unduh Lampiran' }}</span>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <span class="text-slate-400 italic text-[11px]">-</span>
+                                    @endif
                                 </td>
                                 <td class="py-3 px-4 text-xs text-gray-500 max-w-xs truncate">
                                     {{ $att->notes ?? '-' }}

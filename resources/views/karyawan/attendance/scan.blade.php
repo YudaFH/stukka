@@ -235,6 +235,45 @@
                     </p>
                 </div>
 
+                {{-- LAPORAN PEKERJAAN & UPLOAD FILE (KHUSUS ABSEN PULANG) --}}
+                <div id="work-report-card" class="p-4 sm:p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm space-y-3.5 transition-all hidden">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-[#001D5E] flex items-center justify-center font-bold">
+                                <i data-lucide="clipboard-list" class="w-4 h-4 text-[#F7941D]"></i>
+                            </span>
+                            <div>
+                                <h4 class="font-black text-xs sm:text-sm text-[#001D5E]">Laporan Pekerjaan Hari Ini</h4>
+                                <p class="text-[11px] text-slate-500">Isi ringkasan pekerjaan Anda sebelum absen pulang</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-md bg-orange-100 text-[#001D5E] border border-orange-200">
+                            Absen Pulang
+                        </span>
+                    </div>
+
+                    <div>
+                        <label for="work-summary-input" class="block text-xs font-bold text-gray-700 mb-1.5">
+                            Pekerjaan yang Sudah Dilakukan <span class="text-rose-500">*</span>
+                        </label>
+                        <textarea id="work-summary-input" 
+                                  rows="3" 
+                                  placeholder="Contoh:&#10;1. Setup peralatan lighting & sound system di lokasi event&#10;2. Menangani operasional live streaming selama acara&#10;3. Rekap dokumen penyerahan & inventaris alat"
+                                  class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-slate-200 focus:border-[#001D5E] focus:ring-0 transition placeholder-gray-400 font-medium"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5">
+                            Lampiran File / Bukti Kerja <span class="text-slate-400 font-normal">(Opsional)</span>
+                        </label>
+                        <div class="relative">
+                            <input type="file" id="work-file-input" 
+                                   class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#001D5E] file:text-white hover:file:bg-blue-900 cursor-pointer">
+                            <p class="text-[10px] text-slate-400 mt-1">Format: Dokumen PDF, Word, Excel, Foto/Gambar, atau ZIP (Maks 20MB).</p>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- TOMBOL UTAMA PRESENSI (MULAI SAAT DIKLIK, CUKUP SEKALI) --}}
                 <button type="button" id="btn-start-action" onclick="handleStartAttendanceClick()"
                         class="w-full px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-[#001D5E] hover:bg-blue-900 border-2 border-[#001138] text-white font-black text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
@@ -550,7 +589,9 @@
         }
 
         // Update Tab Style
+        const workReportCard = document.getElementById('work-report-card');
         if (mode === 'in') {
+            if (workReportCard) workReportCard.classList.add('hidden');
             tabInBtn.className = 'py-3 px-3 sm:px-6 rounded-xl font-black text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-2 transition-all cursor-pointer bg-[#001D5E] text-white shadow-md ring-2 ring-[#001D5E]/20';
             tabOutBtn.className = 'py-3 px-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 hover:bg-white/80';
 
@@ -561,6 +602,13 @@
             document.getElementById('mode-status-pill').className = 'px-3 py-1.5 rounded-xl bg-emerald-800 text-white text-xs font-black shadow-inner';
             document.getElementById('mode-status-pill').innerText = hasIn ? 'Sudah Masuk' : 'Siap Masuk';
         } else {
+            if (workReportCard) {
+                if (!hasOut && hasIn) {
+                    workReportCard.classList.remove('hidden');
+                } else {
+                    workReportCard.classList.add('hidden');
+                }
+            }
             tabOutBtn.className = 'py-3 px-3 sm:px-6 rounded-xl font-black text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-2 transition-all cursor-pointer bg-[#001D5E] text-white shadow-md ring-2 ring-[#001D5E]/20';
             tabInBtn.className = 'py-3 px-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 hover:bg-white/80';
 
@@ -659,6 +707,16 @@
         if (!isGpsReady) {
             detectGPSLocation(true);
             return;
+        }
+
+        // Khusus Absen Pulang: Wajib isi pekerjaan yang sudah dilakukan
+        if (currentMode === 'out') {
+            const summaryEl = document.getElementById('work-summary-input');
+            if (summaryEl && !summaryEl.value.trim()) {
+                alert('Silakan tuliskan ringkasan "Pekerjaan yang Sudah Dilakukan" hari ini terlebih dahulu.');
+                summaryEl.focus();
+                return;
+            }
         }
 
         if (isCameraActive) {
@@ -836,23 +894,34 @@
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = canvas.toDataURL('image/jpeg', 0.85);
 
+        const formData = new FormData();
+        formData.append('type', currentMode);
+        formData.append('image', imageData);
+        formData.append('face_match_score', score || 85);
+        formData.append('latitude', userLat);
+        formData.append('longitude', userLng);
+        formData.append('location_name', userLocationName);
+        formData.append('notes', userLocationStatus === 'outside' ? `Presensi di luar kantor (±${userDistanceMeters}m)` : '');
+
+        if (currentMode === 'out') {
+            const summaryEl = document.getElementById('work-summary-input');
+            if (summaryEl && summaryEl.value.trim()) {
+                formData.append('work_summary', summaryEl.value.trim());
+            }
+            const fileEl = document.getElementById('work-file-input');
+            if (fileEl && fileEl.files && fileEl.files[0]) {
+                formData.append('work_file', fileEl.files[0]);
+            }
+        }
+
         try {
             const res = await fetch("{{ route('karyawan.attendance.record') }}", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    type: currentMode,
-                    image: imageData,
-                    face_match_score: score || 85,
-                    latitude: userLat,
-                    longitude: userLng,
-                    location_name: userLocationName,
-                    notes: userLocationStatus === 'outside' ? `Presensi di luar kantor (±${userDistanceMeters}m)` : ''
-                })
+                body: formData
             });
 
             const data = await res.json();
@@ -868,6 +937,8 @@
                     hasIn = true;
                 } else {
                     hasOut = true;
+                    const workReportCard = document.getElementById('work-report-card');
+                    if (workReportCard) workReportCard.classList.add('hidden');
                 }
 
                 // Tampilkan Modal Berhasil
