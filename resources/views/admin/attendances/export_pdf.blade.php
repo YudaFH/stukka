@@ -228,16 +228,18 @@
         .sig-editable {
             outline: none;
             cursor: text;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 6px;
             transition: all 0.2s ease;
         }
         .sig-editable:hover {
             background-color: #f1f5f9;
+            outline: 1.5px dashed #3b82f6;
         }
         .sig-editable:focus {
             background-color: #eff6ff;
-            box-shadow: 0 0 0 1.5px #3b82f6;
+            outline: 2px solid #2563eb;
+            box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
         }
 
         /* Print Media Styles */
@@ -375,6 +377,14 @@
                         <td>
                             <div style="font-weight: 800; color: #001D5E;">{{ $att->user ? $att->user->name : 'N/A' }}</div>
                             <div style="font-size: 10px; color: #64748b;">{{ $att->user ? ($att->user->email ?? $att->user->phone) : '-' }}</div>
+                            @if($att->work_summary)
+                                <div style="margin-top: 4px; padding: 4px 6px; background: #f8fafc; border-left: 2px solid #F7941D; border-radius: 4px; font-size: 9.5px; color: #334155; line-height: 1.3;">
+                                    <strong style="color: #001D5E;">Laporan:</strong> {{ Str::limit($att->work_summary, 120) }}
+                                    @if($att->work_file)
+                                        <span style="color: #2563eb; font-weight: 700;">(Lampiran: {{ Str::limit($att->work_file_name ?? 'File', 20) }})</span>
+                                    @endif
+                                </div>
+                            @endif
                         </td>
                         <td style="text-align: center; font-weight: 800; color: #001D5E;">
                             {{ $att->time_in ? substr($att->time_in, 0, 5) : '-' }}

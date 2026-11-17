@@ -218,16 +218,18 @@
         .sig-editable {
             outline: none;
             cursor: text;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 6px;
             transition: all 0.2s ease;
         }
         .sig-editable:hover {
             background-color: #f1f5f9;
+            outline: 1.5px dashed #3b82f6;
         }
         .sig-editable:focus {
             background-color: #eff6ff;
-            box-shadow: 0 0 0 1.5px #3b82f6;
+            outline: 2px solid #2563eb;
+            box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
         }
 
         /* Print Media Styles */

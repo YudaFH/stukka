@@ -27,6 +27,8 @@
                 <th>Jam Pulang</th>
                 <th>Lokasi Pulang</th>
                 <th>Status Presensi</th>
+                <th>Laporan Pekerjaan Hari Ini</th>
+                <th>Lampiran Bukti Kerja</th>
                 <th>Catatan / Keterangan</th>
             </tr>
         </thead>
@@ -57,11 +59,19 @@
                         @endif
                     </td>
                     <td class="text-center">{{ $att->status === 'on_time' ? 'Tepat Waktu' : ($att->status === 'late' ? 'Terlambat' : 'Lembur / Luar Jam') }}</td>
+                    <td>{{ $att->work_summary ?? '-' }}</td>
+                    <td>
+                        @if($att->work_file)
+                            <a href="{{ asset('storage/' . $att->work_file) }}">{{ $att->work_file_name ?? 'Unduh Lampiran' }}</a>
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>{{ $att->notes ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="11" class="text-center" style="padding: 12px; color: #64748b; font-style: italic;">
+                    <td colspan="13" class="text-center" style="padding: 12px; color: #64748b; font-style: italic;">
                         Tidak ada data presensi yang sesuai.
                     </td>
                 </tr>
@@ -72,7 +82,7 @@
             <tr class="total-row">
                 <td colspan="4" class="text-right">TOTAL PRESENSI:</td>
                 <td colspan="2" class="text-center">{{ $attendances->count() }} Kehadiran</td>
-                <td colspan="5">
+                <td colspan="7">
                     Tepat Waktu: {{ $attendances->where('status', 'on_time')->count() }} • 
                     Terlambat: {{ $attendances->where('status', 'late')->count() }} • 
                     Luar Kantor: {{ $attendances->where('location_status_in', 'outside')->count() }}
