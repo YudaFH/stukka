@@ -96,14 +96,6 @@
                     </a>
                 @endif
 
-                @if(Auth::user()->hasAdminAccess())
-                    <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Akses Khusus</p>
-                    <a href="{{ route('admin.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all bg-[#F7941D]/20 border border-[#F7941D] text-[#F7941D] hover:bg-[#F7941D] hover:text-white text-sm font-bold">
-                        <i data-lucide="shield" class="w-4 h-4"></i>
-                        <span>Buka Panel Admin</span>
-                    </a>
-                @endif
 
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Lainnya</p>
 

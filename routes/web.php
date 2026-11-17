@@ -83,6 +83,7 @@ Route::middleware(['auth', 'karyawan'])->prefix('karyawan')->name('karyawan.')->
     Route::get('/dashboard', [\App\Http\Controllers\Karyawan\KaryawanDashboardController::class, 'index'])->name('dashboard');
     Route::get('/attendance/scan', [\App\Http\Controllers\Karyawan\AttendanceController::class, 'scan'])->name('attendance.scan');
     Route::post('/attendance/record', [\App\Http\Controllers\Karyawan\AttendanceController::class, 'record'])->name('attendance.record');
+    Route::post('/attendance/work-report', [\App\Http\Controllers\Karyawan\AttendanceController::class, 'saveWorkReport'])->name('attendance.work-report');
     Route::get('/attendance/history', [\App\Http\Controllers\Karyawan\AttendanceController::class, 'history'])->name('attendance.history');
 
     // Perekaman Master Biometrik Wajah

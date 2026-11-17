@@ -235,43 +235,92 @@
                     </p>
                 </div>
 
-                {{-- LAPORAN PEKERJAAN & UPLOAD FILE (KHUSUS ABSEN PULANG) --}}
-                <div id="work-report-card" class="p-4 sm:p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm space-y-3.5 transition-all hidden">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                        <div class="flex items-center gap-2">
-                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-[#001D5E] flex items-center justify-center font-bold">
-                                <i data-lucide="clipboard-list" class="w-4 h-4 text-[#F7941D]"></i>
+                {{-- LAPORAN PEKERJAAN & UPLOAD FILE (HANYA MUNCUL SETELAH ABSEN WAJAH PULANG BERHASIL) --}}
+                <div id="work-report-card" class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-md space-y-4 transition-all hidden">
+                    
+                    {{-- FORM INPUT LAPORAN --}}
+                    <div id="work-report-form" class="{{ ($hasCheckedOut && !empty($todayAttendance?->work_summary)) ? 'hidden' : '' }} space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-9 h-9 rounded-xl bg-orange-100 text-[#F7941D] flex items-center justify-center font-bold shrink-0">
+                                    <i data-lucide="clipboard-list" class="w-5 h-5 text-[#F7941D]"></i>
+                                </span>
+                                <div>
+                                    <h4 class="font-black text-sm text-[#001D5E]">Laporan Pekerjaan Hari Ini</h4>
+                                    <p class="text-[11px] text-slate-500">Presensi pulang berhasil. Lengkapi laporan tugas yang Anda selesaikan hari ini:</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
+                                Selesai Absen
                             </span>
-                            <div>
-                                <h4 class="font-black text-xs sm:text-sm text-[#001D5E]">Laporan Pekerjaan Hari Ini</h4>
-                                <p class="text-[11px] text-slate-500">Isi ringkasan pekerjaan Anda sebelum absen pulang</p>
+                        </div>
+
+                        <div>
+                            <label for="work-summary-input" class="block text-xs font-bold text-gray-700 mb-1.5">
+                                Pekerjaan yang Sudah Dilakukan <span class="text-rose-500">*</span>
+                            </label>
+                            <textarea id="work-summary-input" 
+                                      rows="3" 
+                                      placeholder="Contoh:&#10;1. Setup peralatan lighting & sound system di lokasi event&#10;2. Menangani operasional live streaming selama acara&#10;3. Rekap dokumen penyerahan & inventaris alat"
+                                      class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-slate-200 focus:border-[#001D5E] focus:ring-0 transition placeholder-gray-400 font-medium">{{ $todayAttendance?->work_summary ?? '' }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+                                Lampiran File / Bukti Kerja <span class="text-slate-400 font-normal">(Opsional)</span>
+                            </label>
+                            <div class="relative">
+                                <input type="file" id="work-file-input" 
+                                       class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#001D5E] file:text-white hover:file:bg-blue-900 cursor-pointer">
+                                <p class="text-[10px] text-slate-400 mt-1">Format: Dokumen PDF, Word, Excel, Foto/Gambar, atau ZIP (Maks 20MB).</p>
                             </div>
                         </div>
-                        <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-md bg-orange-100 text-[#001D5E] border border-orange-200">
-                            Absen Pulang
-                        </span>
-                    </div>
 
-                    <div>
-                        <label for="work-summary-input" class="block text-xs font-bold text-gray-700 mb-1.5">
-                            Pekerjaan yang Sudah Dilakukan <span class="text-rose-500">*</span>
-                        </label>
-                        <textarea id="work-summary-input" 
-                                  rows="3" 
-                                  placeholder="Contoh:&#10;1. Setup peralatan lighting & sound system di lokasi event&#10;2. Menangani operasional live streaming selama acara&#10;3. Rekap dokumen penyerahan & inventaris alat"
-                                  class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-slate-200 focus:border-[#001D5E] focus:ring-0 transition placeholder-gray-400 font-medium"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1.5">
-                            Lampiran File / Bukti Kerja <span class="text-slate-400 font-normal">(Opsional)</span>
-                        </label>
-                        <div class="relative">
-                            <input type="file" id="work-file-input" 
-                                   class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#001D5E] file:text-white hover:file:bg-blue-900 cursor-pointer">
-                            <p class="text-[10px] text-slate-400 mt-1">Format: Dokumen PDF, Word, Excel, Foto/Gambar, atau ZIP (Maks 20MB).</p>
+                        <div class="pt-1">
+                            <button type="button" id="btn-submit-work-report" onclick="submitWorkReport()"
+                                    class="w-full py-3 px-5 rounded-xl bg-[#001D5E] hover:bg-blue-900 text-white font-black text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <i data-lucide="send" class="w-4 h-4 text-[#F7941D]"></i>
+                                <span id="btn-submit-work-report-text">Kirim Laporan Pekerjaan</span>
+                            </button>
                         </div>
                     </div>
+
+                    {{-- TAMPILAN LAPORAN YANG SUDAH TERSIMPAN --}}
+                    <div id="work-report-success" class="{{ ($hasCheckedOut && !empty($todayAttendance?->work_summary)) ? '' : 'hidden' }} space-y-3">
+                        <div class="flex items-center justify-between border-b border-emerald-100 pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                </span>
+                                <div>
+                                    <h4 class="font-black text-xs sm:text-sm text-emerald-950">Laporan Pekerjaan Tersimpan</h4>
+                                    <p class="text-[10px] text-emerald-700">Tercatat bersama absensi pulang hari ini</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="editWorkReport()" class="text-xs font-bold text-blue-900 hover:underline flex items-center gap-1 cursor-pointer">
+                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                <span>Edit Laporan</span>
+                            </button>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <p id="display-work-summary" class="text-xs text-gray-800 font-medium whitespace-pre-line leading-relaxed">
+                                {{ $todayAttendance?->work_summary ?? '' }}
+                            </p>
+                        </div>
+
+                        <div id="display-work-file-box" class="{{ !empty($todayAttendance?->work_file) ? '' : 'hidden' }}">
+                            <a id="display-work-file-link" 
+                               href="{{ !empty($todayAttendance?->work_file) ? asset('storage/' . $todayAttendance->work_file) : '#' }}" 
+                               target="_blank" 
+                               download="{{ $todayAttendance?->work_file_name ?? 'lampiran' }}"
+                               class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-50 text-[#001D5E] border border-blue-200 text-xs font-bold hover:bg-[#001D5E] hover:text-white transition-colors">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-[#F7941D]"></i>
+                                <span id="display-work-file-name">{{ $todayAttendance?->work_file_name ?? 'Unduh Lampiran Bukti Kerja' }}</span>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
 
                 {{-- TOMBOL UTAMA PRESENSI (MULAI SAAT DIKLIK, CUKUP SEKALI) --}}
@@ -378,15 +427,15 @@
                 </div>
 
                 <div class="mt-6 flex flex-col gap-2">
-                    <a href="{{ route('karyawan.dashboard') }}" 
-                       class="w-full py-3.5 px-6 rounded-2xl bg-[#001D5E] hover:bg-blue-900 text-white font-black text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#F7941D]"></i>
-                        <span>Kembali ke Dashboard</span>
-                    </a>
-                    <button type="button" onclick="closeSuccessModal()"
-                            class="w-full py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800">
-                        Tutup Jendela Ini
+                    <button type="button" onclick="closeSuccessModal()" id="btn-modal-action"
+                            class="w-full py-3.5 px-6 rounded-2xl bg-[#001D5E] hover:bg-blue-900 text-white font-black text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="clipboard-list" class="w-4 h-4 text-[#F7941D]" id="btn-modal-action-icon"></i>
+                        <span id="btn-modal-action-text">Tutup Jendela Ini</span>
                     </button>
+                    <a href="{{ route('karyawan.dashboard') }}" 
+                       class="w-full py-2 text-xs font-bold text-slate-500 hover:text-slate-800 text-center">
+                        Kembali ke Dashboard
+                    </a>
                 </div>
             </div>
         </div>
@@ -602,8 +651,9 @@
             document.getElementById('mode-status-pill').className = 'px-3 py-1.5 rounded-xl bg-emerald-800 text-white text-xs font-black shadow-inner';
             document.getElementById('mode-status-pill').innerText = hasIn ? 'Sudah Masuk' : 'Siap Masuk';
         } else {
+            // Khusus Mode Pulang: Form laporan kerja HANYA muncul jika sudah berhasil absen pulang
             if (workReportCard) {
-                if (!hasOut && hasIn) {
+                if (hasOut) {
                     workReportCard.classList.remove('hidden');
                 } else {
                     workReportCard.classList.add('hidden');
@@ -707,16 +757,6 @@
         if (!isGpsReady) {
             detectGPSLocation(true);
             return;
-        }
-
-        // Khusus Absen Pulang: Wajib isi pekerjaan yang sudah dilakukan
-        if (currentMode === 'out') {
-            const summaryEl = document.getElementById('work-summary-input');
-            if (summaryEl && !summaryEl.value.trim()) {
-                alert('Silakan tuliskan ringkasan "Pekerjaan yang Sudah Dilakukan" hari ini terlebih dahulu.');
-                summaryEl.focus();
-                return;
-            }
         }
 
         if (isCameraActive) {
@@ -937,8 +977,13 @@
                     hasIn = true;
                 } else {
                     hasOut = true;
+                    updateActionState();
                     const workReportCard = document.getElementById('work-report-card');
-                    if (workReportCard) workReportCard.classList.add('hidden');
+                    if (workReportCard) {
+                        workReportCard.classList.remove('hidden');
+                        document.getElementById('work-report-form').classList.remove('hidden');
+                        document.getElementById('work-report-success').classList.add('hidden');
+                    }
                 }
 
                 // Tampilkan Modal Berhasil
@@ -946,6 +991,14 @@
                 successType.innerText = currentMode === 'in' ? 'PRESENSI AWAL (MASUK)' : 'PRESENSI AKHIR (PULANG)';
                 successStatus.innerText = data.status === 'late' ? 'TERLAMBAT' : (data.status === 'on_time' ? 'TEPAT WAKTU' : 'BERHASIL');
                 
+                if (currentMode === 'out') {
+                    successSubtitle.innerText = 'Presensi pulang berhasil. Silakan lengkapi laporan pekerjaan hari ini di bawah.';
+                    document.getElementById('btn-modal-action-text').innerText = 'Isi Laporan Pekerjaan Hari Ini';
+                } else {
+                    successSubtitle.innerText = 'Data presensi Anda berhasil diverifikasi dan tersimpan.';
+                    document.getElementById('btn-modal-action-text').innerText = 'Kembali ke Dashboard';
+                }
+
                 if (data.location_status === 'office') {
                     successLocation.innerText = '🏢 Di Kantor (' + (data.distance_meters ?? 0) + 'm)';
                     successLocation.className = 'text-emerald-700 font-black text-right';
@@ -980,7 +1033,94 @@
 
     function closeSuccessModal() {
         successModal.classList.add('hidden');
-        switchMode(currentMode);
+        if (currentMode === 'out') {
+            const workReportCard = document.getElementById('work-report-card');
+            if (workReportCard) {
+                workReportCard.classList.remove('hidden');
+                workReportCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    const summaryInput = document.getElementById('work-summary-input');
+                    if (summaryInput) summaryInput.focus();
+                }, 300);
+            }
+        }
+        updateActionState();
+    }
+
+    // Simpan Laporan Pekerjaan Setelah Absen Pulang
+    async function submitWorkReport() {
+        const summaryInput = document.getElementById('work-summary-input');
+        const fileInput = document.getElementById('work-file-input');
+        const submitBtn = document.getElementById('btn-submit-work-report');
+        const submitBtnText = document.getElementById('btn-submit-work-report-text');
+
+        const summaryVal = summaryInput.value.trim();
+        if (!summaryVal) {
+            alert('Mohon isi ringkasan pekerjaan yang sudah dilakukan terlebih dahulu!');
+            summaryInput.focus();
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtnText.innerText = 'Menyimpan Laporan...';
+
+        const formData = new FormData();
+        formData.append('work_summary', summaryVal);
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('work_file', fileInput.files[0]);
+        }
+
+        try {
+            const res = await fetch("{{ route('karyawan.attendance.work-report') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('work-report-form').classList.add('hidden');
+                document.getElementById('work-report-success').classList.remove('hidden');
+                document.getElementById('display-work-summary').innerText = data.work_summary;
+
+                const fileBox = document.getElementById('display-work-file-box');
+                const fileLink = document.getElementById('display-work-file-link');
+                const fileName = document.getElementById('display-work-file-name');
+
+                if (data.work_file_url) {
+                    fileBox.classList.remove('hidden');
+                    fileLink.href = data.work_file_url;
+                    fileName.innerText = data.work_file_name || 'Unduh Lampiran Bukti Kerja';
+                } else {
+                    fileBox.classList.add('hidden');
+                }
+
+                lucide.createIcons();
+                if (window.notify) {
+                    window.notify.success(data.message, 'Laporan Disimpan');
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                alert(data.message || 'Gagal menyimpan laporan.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Terjadi kesalahan saat menyimpan laporan.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtnText.innerText = 'Kirim Laporan Pekerjaan';
+        }
+    }
+
+    function editWorkReport() {
+        document.getElementById('work-report-success').classList.add('hidden');
+        document.getElementById('work-report-form').classList.remove('hidden');
+        document.getElementById('work-summary-input').focus();
     }
 
     // Inisialisasi saat halaman dibuka

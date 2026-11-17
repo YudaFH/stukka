@@ -354,6 +354,56 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Simpan Laporan Pekerjaan & File Lampiran Setelah Absen Pulang
+     */
+    public function saveWorkReport(Request $request)
+    {
+        $request->validate([
+            'work_summary' => 'required|string|max:5000',
+            'work_file' => 'nullable|file|max:20480',
+        ], [
+            'work_summary.required' => 'Pekerjaan yang sudah dilakukan wajib diisi.',
+            'work_file.max' => 'Ukuran file lampiran maksimal 20 MB.',
+        ]);
+
+        $user = Auth::user();
+        $today = Carbon::today()->toDateString();
+        $attendance = Attendance::where('user_id', $user->id)
+            ->where('date', $today)
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data absensi hari ini tidak ditemukan. Harap lakukan presensi terlebih dahulu.'
+            ], 404);
+        }
+
+        $attendance->work_summary = $request->input('work_summary');
+
+        if ($request->hasFile('work_file')) {
+            $file = $request->file('work_file');
+            $workFolder = 'attendance_reports/' . date('Y-m');
+            $originalName = $file->getClientOriginalName();
+            $cleanName = time() . '_' . $user->id . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
+            $workFilePath = $file->storeAs($workFolder, $cleanName, 'public');
+
+            $attendance->work_file = $workFilePath;
+            $attendance->work_file_name = $originalName;
+        }
+
+        $attendance->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan pekerjaan hari ini berhasil disimpan!',
+            'work_summary' => $attendance->work_summary,
+            'work_file_url' => $attendance->work_file ? asset('storage/' . $attendance->work_file) : null,
+            'work_file_name' => $attendance->work_file_name,
+        ]);
+    }
+
+    /**
      * Riwayat Absensi Karyawan
      */
     public function history(Request $request)
