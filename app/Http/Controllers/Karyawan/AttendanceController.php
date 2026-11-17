@@ -20,7 +20,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
         $todayAttendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         $settings = AttendanceSetting::getSettings();
@@ -82,11 +82,12 @@ class AttendanceController extends Controller
             'location_name' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:500',
             'work_summary' => 'nullable|string|max:5000',
-            'work_file' => 'nullable|file|max:20480',
+            'work_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,webp,zip,rar,txt,csv|max:20480',
         ], [
             'latitude.required' => 'Akses lokasi (GPS) wajib diaktifkan pada browser/perangkat Anda.',
             'longitude.required' => 'Akses lokasi (GPS) wajib diaktifkan pada browser/perangkat Anda.',
             'work_file.max' => 'Ukuran lampiran bukti kerja maksimal 20 MB.',
+            'work_file.mimes' => 'Format file lampiran tidak diizinkan. Gunakan dokumen (PDF, Word, Excel, PPT), gambar, arsip ZIP/RAR, atau teks.',
         ]);
 
         $user = Auth::user();
@@ -149,10 +150,16 @@ class AttendanceController extends Controller
         $filePath = $folder . '/' . $filename;
         Storage::disk('public')->put($filePath, $imageData);
 
-        $attendance = Attendance::firstOrNew([
-            'user_id' => $user->id,
-            'date' => $today,
-        ]);
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->first();
+
+        if (!$attendance) {
+            $attendance = new Attendance([
+                'user_id' => $user->id,
+                'date' => $today,
+            ]);
+        }
 
         $locationBadge = $isWithinOffice ? '🏢 Di Kantor' : '📍 Di Luar Kantor';
 
@@ -360,16 +367,17 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'work_summary' => 'required|string|max:5000',
-            'work_file' => 'nullable|file|max:20480',
+            'work_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,webp,zip,rar,txt,csv|max:20480',
         ], [
             'work_summary.required' => 'Pekerjaan yang sudah dilakukan wajib diisi.',
             'work_file.max' => 'Ukuran file lampiran maksimal 20 MB.',
+            'work_file.mimes' => 'Format file lampiran tidak diizinkan. Gunakan dokumen (PDF, Word, Excel, PPT), gambar, arsip ZIP/RAR, atau teks.',
         ]);
 
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
         $attendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         if (!$attendance) {

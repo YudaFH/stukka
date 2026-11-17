@@ -108,7 +108,10 @@ class User extends Authenticatable
 
     public function isFullAccess(): bool
     {
-        return $this->usertype === 'admin' || $this->role === self::ROLE_FULL_ACCESS;
+        if ($this->role === self::ROLE_FULL_ACCESS) {
+            return true;
+        }
+        return $this->usertype === 'admin' && empty($this->role);
     }
 
     public function canManageContent(): bool
@@ -165,7 +168,7 @@ class User extends Authenticatable
 
     public function todayAttendance()
     {
-        return $this->hasOne(Attendance::class)->where('date', now()->toDateString());
+        return $this->hasOne(Attendance::class)->whereDate('date', now()->toDateString());
     }
 
     public function assignedEvents()

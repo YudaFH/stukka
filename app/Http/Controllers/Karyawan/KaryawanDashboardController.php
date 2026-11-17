@@ -17,7 +17,7 @@ class KaryawanDashboardController extends Controller
         $today = Carbon::today()->toDateString();
         
         $todayAttendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         $settings = AttendanceSetting::getSettings();

@@ -50,9 +50,9 @@ class AdminAttendanceController extends Controller
         // Statistik hari ini
         $today = Carbon::today()->toDateString();
         $totalEmployees = $employees->count();
-        $todayPresent = Attendance::where('date', $today)->count();
-        $todayLate = Attendance::where('date', $today)->where('status', 'late')->count();
-        $todayOnTime = Attendance::where('date', $today)->where('status', 'on_time')->count();
+        $todayPresent = Attendance::whereDate('date', $today)->count();
+        $todayLate = Attendance::whereDate('date', $today)->where('status', 'late')->count();
+        $todayOnTime = Attendance::whereDate('date', $today)->where('status', 'on_time')->count();
 
         return view('admin.attendances.index', compact(
             'attendances',
