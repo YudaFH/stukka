@@ -78,24 +78,134 @@
             .no-print {
                 flex-direction: column;
                 align-items: stretch;
-                padding: 12px 16px;
-                gap: 12px;
+                padding: 10px 14px;
+                gap: 10px;
             }
             .bar-left {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+            }
+            .btn-back {
+                padding: 8px 12px;
+                font-size: 12px;
+                flex-shrink: 0;
+            }
+            .bar-info {
+                min-width: 0;
+                overflow: hidden;
+            }
+            .bar-subtitle {
+                font-size: 9.5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .bar-title {
+                font-size: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .bar-right {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
+                width: 100%;
             }
             .bar-right .btn {
+                padding: 8px 10px;
+                font-size: 11px;
                 justify-content: center;
-                padding: 8px 12px;
-                font-size: 12px;
+                text-align: center;
             }
+            .paper {
+                margin: 10px;
+                padding: 18px 14px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            }
+            .kop-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding-bottom: 12px;
+                margin-bottom: 14px;
+            }
+            .brand-title {
+                font-size: 17px;
+            }
+            .doc-title {
+                text-align: left;
+                width: 100%;
+                border-top: 1px dashed #e2e8f0;
+                padding-top: 10px;
+            }
+            .doc-title h1 {
+                font-size: 14px;
+            }
+            .meta-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                margin-bottom: 14px;
+            }
+            .meta-card {
+                padding: 8px 10px;
+            }
+            .meta-label {
+                font-size: 8.5px;
+            }
+            .meta-val {
+                font-size: 13px;
+            }
+            .table-hint {
+                display: block;
+            }
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                margin-bottom: 16px;
+            }
+            .table-container table {
+                min-width: 680px;
+                margin-bottom: 0;
+            }
+            .signature-section {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 12px;
+                margin-top: 20px;
+            }
+            .sig-box {
+                width: 48%;
+            }
+            .sig-space {
+                height: 45px;
+            }
+            .sig-name {
+                font-size: 11px;
+            }
+            .sig-role {
+                font-size: 9.5px;
+            }
+        }
+
+        /* Table Hint for Mobile */
+        .table-hint {
+            display: none;
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-align: right;
+        }
+
+        .table-container {
+            width: 100%;
         }
 
         .btn {
@@ -336,6 +446,26 @@
             thead {
                 display: table-header-group;
             }
+            .table-hint {
+                display: none !important;
+            }
+            .table-container {
+                overflow: visible !important;
+                border: none !important;
+            }
+            .kop-header {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+            }
+            .doc-title {
+                text-align: right !important;
+                border-top: none !important;
+                padding-top: 0 !important;
+            }
+            .meta-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
         }
     </style>
 </head>
@@ -344,9 +474,9 @@
     {{-- Screen Action Bar --}}
     <div class="no-print">
         <div class="bar-left">
-            <a href="{{ route('admin.attendances.index') }}" class="btn btn-outline">
+            <a href="{{ route('admin.attendances.index') }}" class="btn btn-outline btn-back">
                 <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
-                <span>Kembali ke Rekap Absensi</span>
+                <span>Kembali</span>
             </a>
             <div class="bar-info">
                 <span class="bar-subtitle">Laporan Rekapitulasi Presensi</span>
@@ -356,11 +486,11 @@
         <div class="bar-right">
             <a href="{{ route('admin.attendances.export.excel', request()->all()) }}" class="btn btn-outline" style="color: #15803d; border-color: #86efac;">
                 <i data-lucide="file-spreadsheet" style="width: 16px; height: 16px; color: #16a34a;"></i>
-                <span>Unduh Format Excel (.xls)</span>
+                <span>Unduh Excel</span>
             </a>
             <button onclick="window.print()" class="btn btn-primary">
                 <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
-                <span>Cetak / Simpan PDF</span>
+                <span>Cetak / PDF</span>
             </button>
         </div>
     </div>
@@ -413,6 +543,11 @@
         @endif
 
         {{-- Data Table --}}
+        <div class="table-hint">
+            <i data-lucide="chevrons-right" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle;"></i>
+            Geser tabel ke samping untuk melihat rincian presensi &rarr;
+        </div>
+        <div class="table-container">
         <table>
             <thead>
                 <tr>
@@ -487,6 +622,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
 
         {{-- Signature Section --}}
         <div class="signature-section">
