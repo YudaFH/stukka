@@ -162,13 +162,6 @@
                     <span class="font-medium">Aturan Presensi</span>
                 </a>
                 @endif
-
-                {{-- Presensi Mandiri Admin (Scan Kamera Wajah) --}}
-                <a href="{{ route('karyawan.attendance.scan') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
-                    <span class="font-medium">Presensi Wajah (Kamera)</span>
-                </a>
                 @endif
 
             </nav>
@@ -430,15 +423,6 @@
                             <span class="text-xs font-bold text-slate-800">Aturan Jam</span>
                         </a>
                         @endif
-
-                        {{-- Presensi Saya --}}
-                        <a href="{{ route('karyawan.dashboard') }}" 
-                           class="flex flex-col items-center p-3 rounded-2xl border-2 border-slate-300 bg-white hover:border-[#001D5E] text-center transition-colors">
-                            <div class="w-10 h-10 rounded-xl bg-blue-900 text-[#F7941D] flex items-center justify-center mb-1.5">
-                                <i data-lucide="scan-face" class="w-5 h-5"></i>
-                            </div>
-                            <span class="text-xs font-bold text-slate-800">Presensi Saya</span>
-                        </a>
 
                         {{-- Lihat Website --}}
                         <a href="{{ route('home') }}" target="_blank"
