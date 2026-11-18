@@ -74,126 +74,6 @@
             flex-shrink: 0;
         }
 
-        @media screen and (max-width: 768px) {
-            .no-print {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 10px 14px;
-                gap: 10px;
-            }
-            .bar-left {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 10px;
-                width: 100%;
-            }
-            .btn-back {
-                padding: 8px 12px;
-                font-size: 12px;
-                flex-shrink: 0;
-            }
-            .bar-info {
-                min-width: 0;
-                overflow: hidden;
-            }
-            .bar-subtitle {
-                font-size: 9.5px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .bar-title {
-                font-size: 12px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .bar-right {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-                width: 100%;
-            }
-            .bar-right .btn {
-                padding: 8px 10px;
-                font-size: 11px;
-                justify-content: center;
-                text-align: center;
-            }
-            .paper {
-                margin: 10px;
-                padding: 18px 14px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            }
-            .kop-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-                padding-bottom: 12px;
-                margin-bottom: 14px;
-            }
-            .brand-title {
-                font-size: 17px;
-            }
-            .doc-title {
-                text-align: left;
-                width: 100%;
-                border-top: 1px dashed #e2e8f0;
-                padding-top: 10px;
-            }
-            .doc-title h1 {
-                font-size: 14px;
-            }
-            .meta-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                margin-bottom: 14px;
-            }
-            .meta-card {
-                padding: 8px 10px;
-            }
-            .meta-label {
-                font-size: 8.5px;
-            }
-            .meta-val {
-                font-size: 13px;
-            }
-            .table-hint {
-                display: block;
-            }
-            .table-container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                margin-bottom: 16px;
-            }
-            .table-container table {
-                min-width: 680px;
-                margin-bottom: 0;
-            }
-            .signature-section {
-                flex-direction: row;
-                justify-content: space-between;
-                gap: 12px;
-                margin-top: 20px;
-            }
-            .sig-box {
-                width: 48%;
-            }
-            .sig-space {
-                height: 45px;
-            }
-            .sig-name {
-                font-size: 11px;
-            }
-            .sig-role {
-                font-size: 9.5px;
-            }
-        }
-
         /* Table Hint for Mobile */
         .table-hint {
             display: none;
@@ -409,6 +289,132 @@
             background-color: #eff6ff;
             outline: 2px solid #2563eb;
             box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+        }
+
+        /* Responsive Overrides for Mobile Screen */
+        @media screen and (max-width: 768px) {
+            .no-print {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 10px 14px !important;
+                gap: 10px !important;
+            }
+            .bar-left {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 10px !important;
+                width: 100% !important;
+            }
+            .btn-back {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                flex-shrink: 0 !important;
+            }
+            .bar-info {
+                min-width: 0 !important;
+                overflow: hidden !important;
+            }
+            .bar-subtitle {
+                font-size: 9.5px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+            .bar-title {
+                font-size: 12px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+            .bar-right {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+            .bar-right .btn {
+                padding: 8px 10px !important;
+                font-size: 11.5px !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+            .paper {
+                margin: 10px !important;
+                padding: 18px 14px !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.04) !important;
+            }
+            .kop-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+                padding-bottom: 12px !important;
+                margin-bottom: 14px !important;
+            }
+            .brand-title {
+                font-size: 17px !important;
+            }
+            .doc-title {
+                text-align: left !important;
+                width: 100% !important;
+                margin-top: 4px !important;
+            }
+            .doc-title h1 {
+                font-size: 14px !important;
+            }
+            .doc-title p {
+                font-size: 10.5px !important;
+            }
+            .meta-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+                margin-bottom: 14px !important;
+            }
+            .meta-card {
+                padding: 8px 10px !important;
+            }
+            .meta-label {
+                font-size: 8.5px !important;
+            }
+            .meta-val {
+                font-size: 13px !important;
+            }
+            .table-hint {
+                display: block !important;
+            }
+            .table-container {
+                display: block !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                margin-bottom: 16px !important;
+            }
+            .table-container table {
+                min-width: 700px !important;
+                margin-bottom: 0 !important;
+            }
+            .signature-section {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                gap: 12px !important;
+                margin-top: 20px !important;
+            }
+            .sig-box {
+                width: 48% !important;
+            }
+            .sig-space {
+                height: 45px !important;
+            }
+            .sig-name {
+                font-size: 11px !important;
+            }
+            .sig-role {
+                font-size: 9.5px !important;
+            }
         }
 
         /* Print Media Styles */
