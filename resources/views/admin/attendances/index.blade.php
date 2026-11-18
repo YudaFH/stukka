@@ -6,8 +6,8 @@
 <div class="space-y-6">
 
     {{-- 1. HEADER --}}
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 shadow-sm">
-        <div class="min-w-0 flex-1">
+    <div class="bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
             <h1 class="text-xl sm:text-2xl font-black text-[#001D5E] tracking-tight">Rekap Presensi Karyawan</h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">
                 Pantau kehadiran harian, keterlambatan, verifikasi GPS lokasi, dan unduh laporan resmi.
@@ -15,11 +15,11 @@
         </div>
 
         {{-- Tombol Aksi & Export --}}
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 shrink-0 w-full lg:w-auto">
-            <div class="flex items-center gap-2 w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2.5 shrink-0">
+            <div class="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2.5">
                 {{-- Unduh Excel --}}
                 <a href="{{ route('admin.attendances.export.excel', request()->all()) }}"
-                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs border-2 border-emerald-700 transition-colors shadow-xs whitespace-nowrap text-center"
+                   class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs border border-emerald-700 transition-colors shadow-xs whitespace-nowrap text-center"
                    title="Unduh data sesuai filter ke format Microsoft Excel (.xls)">
                     <i data-lucide="file-spreadsheet" class="w-4 h-4 text-white"></i>
                     <span>Unduh Excel</span>
@@ -27,7 +27,7 @@
 
                 {{-- Cetak / Simpan PDF --}}
                 <a href="{{ route('admin.attendances.export.pdf', request()->all()) }}" target="_blank"
-                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#001D5E] hover:bg-blue-900 text-white font-bold text-xs border-2 border-[#001138] transition-colors shadow-xs whitespace-nowrap text-center"
+                   class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#001D5E] hover:bg-blue-900 text-white font-bold text-xs border border-[#001138] transition-colors shadow-xs whitespace-nowrap text-center"
                    title="Buka laporan format cetak A4 dan simpan sebagai PDF">
                     <i data-lucide="printer" class="w-4 h-4 text-[#F7941D]"></i>
                     <span>Cetak / PDF</span>
@@ -36,7 +36,7 @@
 
             {{-- Tombol Pengaturan Jam Kerja --}}
             <a href="{{ route('admin.attendances.settings.view') }}"
-               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border-2 border-slate-300 transition-colors shadow-xs whitespace-nowrap text-center">
+               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-300 transition-colors shadow-xs whitespace-nowrap text-center">
                 <i data-lucide="settings-2" class="w-4 h-4 text-[#F7941D]"></i>
                 <span>Aturan Jam</span>
             </a>
