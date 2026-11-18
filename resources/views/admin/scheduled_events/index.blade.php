@@ -7,25 +7,17 @@
 <div class="space-y-6">
 
     {{-- Top Action & Header --}}
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 shadow-sm">
-        <div>
-            <h1 class="text-xl sm:text-2xl font-black text-[#001D5E]">Jadwal Event Operasional</h1>
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 shadow-sm">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-black text-[#001D5E] tracking-tight">Jadwal Event Operasional</h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-1">Kelola agenda event produksi Stukka, alokasi kru lapangan, dan pantau keuangan proyek.</p>
         </div>
         
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto shrink-0">
-            {{-- Tombol Tambah Jadwal Event (Primary Action) --}}
-            <a href="{{ route('admin.scheduled-events.create') }}" 
-               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#F7941D] hover:bg-orange-600 text-white font-bold text-xs sm:text-sm border-2 border-[#D67B0F] shadow-md transition-colors whitespace-nowrap order-1 sm:order-3">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>Tambah Jadwal Event</span>
-            </a>
-
-            {{-- Tombol Export (Grid 50/50 di mobile, sebaris rapi di desktop) --}}
-            <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto order-2 sm:order-1">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 shrink-0 w-full lg:w-auto">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
                 {{-- Unduh Excel --}}
                 <a href="{{ route('admin.scheduled-events.export.excel', request()->all()) }}" 
-                   class="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm border-2 border-emerald-700 shadow-xs transition-colors whitespace-nowrap text-center"
+                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs border-2 border-emerald-700 shadow-xs transition-colors whitespace-nowrap text-center"
                    title="Unduh rekap data event dan keuangan ke Excel (.xls)">
                     <i data-lucide="file-spreadsheet" class="w-4 h-4 text-white"></i>
                     <span>Unduh Excel</span>
@@ -33,12 +25,19 @@
 
                 {{-- Cetak / Simpan PDF --}}
                 <a href="{{ route('admin.scheduled-events.export.pdf', request()->all()) }}" target="_blank"
-                   class="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#001D5E] hover:bg-blue-900 text-white font-bold text-xs sm:text-sm border-2 border-[#001138] shadow-xs transition-colors whitespace-nowrap text-center"
+                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#001D5E] hover:bg-blue-900 text-white font-bold text-xs border-2 border-[#001138] shadow-xs transition-colors whitespace-nowrap text-center"
                    title="Buka laporan cetak event dan simpan PDF">
                     <i data-lucide="printer" class="w-4 h-4 text-[#F7941D]"></i>
                     <span>Cetak / PDF</span>
                 </a>
             </div>
+
+            {{-- Tombol Tambah Jadwal Event --}}
+            <a href="{{ route('admin.scheduled-events.create') }}" 
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#F7941D] hover:bg-orange-600 text-white font-bold text-xs border-2 border-[#D67B0F] shadow-sm transition-colors whitespace-nowrap text-center">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Tambah Jadwal Event</span>
+            </a>
         </div>
     </div>
 
