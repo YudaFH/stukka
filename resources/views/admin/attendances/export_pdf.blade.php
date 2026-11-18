@@ -36,7 +36,66 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 16px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .bar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .bar-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .bar-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bar-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #001D5E;
+        }
+
+        .bar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .no-print {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            .bar-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .bar-right {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .bar-right .btn {
+                justify-content: center;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
         }
 
         .btn {
@@ -284,19 +343,17 @@
 
     {{-- Screen Action Bar --}}
     <div class="no-print">
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <div class="bar-left">
             <a href="{{ route('admin.attendances.index') }}" class="btn btn-outline">
                 <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
                 <span>Kembali ke Rekap Absensi</span>
             </a>
-            <span style="font-size: 13px; font-weight: 700; color: #64748b;">
-                Laporan Rekapitulasi Presensi: <strong style="color: #001D5E;">{{ $periodLabel }}</strong>
-            </span>
-            <span style="font-size: 11px; background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 4px 10px; border-radius: 8px; font-weight: 600;">
-                ✍️ Teks nama & jabatan penanda tangan di bawah dapat diklik langsung untuk diedit
-            </span>
+            <div class="bar-info">
+                <span class="bar-subtitle">Laporan Rekapitulasi Presensi</span>
+                <span class="bar-title">{{ $periodLabel }}</span>
+            </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="bar-right">
             <a href="{{ route('admin.attendances.export.excel', request()->all()) }}" class="btn btn-outline" style="color: #15803d; border-color: #86efac;">
                 <i data-lucide="file-spreadsheet" style="width: 16px; height: 16px; color: #16a34a;"></i>
                 <span>Unduh Format Excel (.xls)</span>
