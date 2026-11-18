@@ -6,16 +6,23 @@
 <div class="max-w-4xl mx-auto space-y-6">
 
     {{-- Breadcrumb & Title --}}
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-black text-[#001D5E]">Pengaturan Jam & Aturan Absensi</h1>
-            <p class="text-sm text-gray-500 mt-1">
-                Atur jendela waktu absensi masuk/pulang, hari kerja aktif, serta parameter AI Face Recognition.
-            </p>
+    <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+            <a href="{{ route('admin.attendances.index') }}" 
+               class="p-2 -ml-1 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#001D5E] hover:border-slate-400 transition-colors shadow-xs shrink-0" 
+               title="Kembali ke Rekap Absensi">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <div class="min-w-0">
+                <h1 class="text-xl sm:text-2xl font-black text-[#001D5E] truncate">Aturan Jam & Presensi</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 truncate">
+                    Atur jendela waktu absensi, hari kerja aktif, serta radius kantor.
+                </p>
+            </div>
         </div>
         <a href="{{ route('admin.attendances.index') }}" 
-           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs">
-            <i data-lucide="arrow-left" class="w-4 h-4 text-slate-600"></i>
+           class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-slate-600"></i>
             <span>Kembali ke Rekap</span>
         </a>
     </div>

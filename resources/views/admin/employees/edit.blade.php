@@ -6,13 +6,20 @@
 <div class="max-w-2xl mx-auto space-y-6">
 
     {{-- Breadcrumb --}}
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-black text-[#001D5E]">Edit Data Karyawan</h1>
-            <p class="text-sm text-gray-500 mt-1">Perbarui profil dan data kepegawaian {{ $employee->name }}.</p>
+    <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+            <a href="{{ route('admin.employees.index') }}" 
+               class="p-2 -ml-1 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#001D5E] hover:border-slate-400 transition-colors shadow-xs shrink-0" 
+               title="Kembali ke Daftar Karyawan">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <div class="min-w-0">
+                <h1 class="text-xl sm:text-2xl font-black text-[#001D5E] truncate">Edit Data Karyawan</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 truncate">Perbarui profil dan data kepegawaian {{ $employee->name }}.</p>
+            </div>
         </div>
-        <a href="{{ route('admin.employees.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs">
-            <i data-lucide="arrow-left" class="w-4 h-4 text-slate-600"></i>
+        <a href="{{ route('admin.employees.index') }}" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-slate-600"></i>
             <span>Kembali</span>
         </a>
     </div>

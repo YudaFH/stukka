@@ -6,13 +6,21 @@
 <div class="space-y-6">
     
     {{-- Header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-[#001D5E]">Kelola Testimoni Client</h1>
-            <p class="text-sm text-gray-500 mt-1">Ulasan kepuasan dan penilaian dari klien yang pernah bekerja sama dengan Stukka.</p>
+    <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+            <a href="{{ route('admin.events.index') }}" 
+               class="p-2 -ml-1 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#001D5E] hover:border-slate-400 transition-colors shadow-xs shrink-0" 
+               title="Kembali ke Portofolio Project">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <div class="min-w-0">
+                <h1 class="text-xl sm:text-2xl font-black text-[#001D5E] truncate">Kelola Testimoni Client</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 truncate">Ulasan kepuasan dan penilaian dari klien Stukka.</p>
+            </div>
         </div>
-        <a href="{{ route('admin.events.index') }}" class="text-gray-700 hover:text-[#001D5E] font-bold flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border-2 border-slate-300 transition-colors self-start sm:self-auto whitespace-nowrap shrink-0">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Project
+        <a href="{{ route('admin.events.index') }}" class="hidden sm:inline-flex text-gray-700 hover:text-[#001D5E] text-xs font-bold items-center gap-2 bg-white px-3.5 py-2 rounded-xl border border-slate-300 shadow-xs transition-colors whitespace-nowrap shrink-0">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>Kembali ke Project</span>
         </a>
     </div>
 
