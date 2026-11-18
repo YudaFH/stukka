@@ -50,6 +50,19 @@
             {{-- Navigation Menu --}}
             <nav class="flex-1 overflow-y-auto sidebar-scroll py-6 px-3 space-y-1.5">
                 
+                @if(Auth::user()->hasAdminAccess())
+                <div class="mb-4 pb-3 border-b border-blue-900/60">
+                    <a href="{{ route('admin.index') }}" 
+                       class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-[#001542] hover:from-[#F7941D] hover:to-orange-600 text-white transition-all shadow-md group border border-blue-400/30">
+                        <span class="flex items-center gap-2 text-xs font-black tracking-wide">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-[#F7941D] group-hover:text-white"></i>
+                            PANEL ADMIN
+                        </span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 opacity-70 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+                @endif
+
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2">Main</p>
                 
                 {{-- Dashboard --}}
@@ -144,7 +157,13 @@
                     <img src="{{ asset('images/LOGO_KK.png') }}" alt="Stukka Logo" class="h-7 w-auto object-contain">
                     <span class="text-white flex items-center">STUKKA <span class="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-blue-900 text-orange-300 ml-2 -translate-y-1 uppercase tracking-wider shadow-xs">STAFF</span></span>
                 </a>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    @if(Auth::user()->hasAdminAccess())
+                        <a href="{{ route('admin.index') }}" class="px-2.5 py-1 rounded-lg bg-blue-800 text-orange-300 border border-blue-600 text-[10px] font-black flex items-center gap-1 shadow-xs hover:bg-[#F7941D] hover:text-white transition-colors">
+                            <i data-lucide="shield" class="w-3 h-3 text-[#F7941D]"></i>
+                            <span>Admin</span>
+                        </a>
+                    @endif
                     <div class="text-right">
                         <p class="text-xs font-bold text-white leading-tight truncate max-w-[120px]">{{ Auth::user()->name }}</p>
                         <p class="text-[10px] text-orange-300 leading-tight truncate max-w-[120px]">{{ Auth::user()->position ?? 'Karyawan' }}</p>

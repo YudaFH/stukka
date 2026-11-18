@@ -137,37 +137,37 @@
                 </a>
                 @endif
 
-                {{-- Presensi & Kehadiran (Untuk Semua Staf & Manajemen) --}}
-                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi & Kehadiran</p>
+                {{-- HR & Kelola Karyawan & Absensi --}}
+                @if(Auth::user()->canManageEmployees() || Auth::user()->canManageAttendance())
+                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Karyawan & Absensi</p>
 
-                <a href="{{ route('karyawan.attendance.scan') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
-                    <span class="font-medium">Presensi Wajah</span>
-                </a>
-
-                <a href="{{ route('karyawan.attendance.history') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.history') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="calendar-days" class="w-5 h-5"></i>
-                    <span class="font-medium">Riwayat Absensi</span>
-                </a>
-
-                @if(Auth::user()->canManageAttendance())
-                <a href="{{ route('admin.attendances.index') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.attendances.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="clipboard-check" class="w-5 h-5"></i>
-                    <span class="font-medium">Rekap Seluruh Absensi</span>
-                </a>
-                @endif
-
-                {{-- HR & Kelola Karyawan --}}
                 @if(Auth::user()->canManageEmployees())
-                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Manajemen Tim</p>
-
                 <a href="{{ route('admin.employees.index') }}" 
                    class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.employees.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
                     <i data-lucide="users" class="w-5 h-5"></i>
                     <span class="font-medium">Kelola Karyawan</span>
+                </a>
+                @endif
+
+                @if(Auth::user()->canManageAttendance())
+                <a href="{{ route('admin.attendances.index') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.attendances.index') || request()->routeIs('admin.attendances.export.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                    <span class="font-medium">Rekap Absensi</span>
+                </a>
+
+                <a href="{{ route('admin.attendances.settings.view') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.attendances.settings.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                    <span class="font-medium">Aturan Presensi</span>
+                </a>
+                @endif
+
+                {{-- Presensi Mandiri Admin (Scan Kamera Wajah) --}}
+                <a href="{{ route('karyawan.attendance.scan') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
+                    <span class="font-medium">Presensi Wajah (Kamera)</span>
                 </a>
                 @endif
 
