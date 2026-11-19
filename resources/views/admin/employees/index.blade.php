@@ -115,11 +115,22 @@
                                 </div>
                             @endif
                             <div class="min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
+                                <div class="flex items-center gap-1.5 flex-wrap">
                                     <h4 class="font-black text-sm text-[#001D5E] truncate leading-tight">{{ $emp->name }}</h4>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black {{ $roleInfo['badge_bg'] }} {{ $roleInfo['badge_text'] }} border {{ $roleInfo['badge_border'] }}">
-                                        {{ $emp->id === 1 ? 'Super Admin' : $roleInfo['name'] }}
-                                    </span>
+                                    @if($emp->id === 1)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-600 text-white border border-purple-700">
+                                            Super Admin
+                                        </span>
+                                    @else
+                                        @foreach($emp->roles_list as $rKey)
+                                            @php
+                                                $rInfo = $roles[$rKey] ?? ['name' => $rKey, 'badge_bg' => 'bg-slate-600', 'badge_border' => 'border-slate-700', 'badge_text' => 'text-white'];
+                                            @endphp
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black {{ $rInfo['badge_bg'] }} {{ $rInfo['badge_text'] }} border {{ $rInfo['badge_border'] }}">
+                                                {{ $rInfo['name'] }}
+                                            </span>
+                                        @endforeach
+                                    @endif
                                 </div>
                                 <p class="text-xs text-gray-600 truncate mt-0.5">{{ $emp->email }}</p>
                                 <p class="text-xs font-bold text-orange-700 mt-0.5 truncate">{{ $emp->position ?? 'Karyawan' }}</p>
@@ -231,11 +242,25 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3.5 px-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold {{ $roleInfo['badge_bg'] }} {{ $roleInfo['badge_text'] }} border-2 {{ $roleInfo['badge_border'] }} shadow-xs">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                                        {{ $emp->id === 1 ? 'Super Admin' : $roleInfo['name'] }}
-                                    </span>
+                                <td class="py-3.5 px-5">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        @if($emp->id === 1)
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white border-2 border-purple-700 shadow-xs whitespace-nowrap">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                                Super Admin
+                                            </span>
+                                        @else
+                                            @foreach($emp->roles_list as $rKey)
+                                                @php
+                                                    $rInfo = $roles[$rKey] ?? ['name' => $rKey, 'badge_bg' => 'bg-slate-600', 'badge_border' => 'border-slate-700', 'badge_text' => 'text-white'];
+                                                @endphp
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold {{ $rInfo['badge_bg'] }} {{ $rInfo['badge_text'] }} border-2 {{ $rInfo['badge_border'] }} shadow-xs whitespace-nowrap">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                                    {{ $rInfo['name'] }}
+                                                </span>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="py-3.5 px-5 font-mono text-xs font-bold text-gray-700 whitespace-nowrap">
                                     {{ $emp->nip ?? '-' }}

@@ -39,10 +39,17 @@ class AdminEmployeeController extends Controller
         if ($request->filled('role')) {
             if ($role === 'full_access') {
                 $query->where(function ($q) {
-                    $q->where('role', 'full_access')->orWhere('usertype', 'admin');
+                    $q->where('role', 'full_access')
+                      ->orWhere('roles', 'like', '%"full_access"%')
+                      ->orWhere('role', 'like', '%full_access%')
+                      ->orWhere('usertype', 'admin');
                 });
             } else {
-                $query->where('role', $role);
+                $query->where(function ($q) use ($role) {
+                    $q->where('role', $role)
+                      ->orWhere('roles', 'like', "%\"{$role}\"%")
+                      ->orWhere('role', 'like', "%{$role}%");
+                });
             }
         }
 
@@ -62,28 +69,40 @@ class AdminEmployeeController extends Controller
 
     public function store(Request $request)
     {
+        // Support both roles[] and legacy role string
+        if ($request->has('role') && !$request->has('roles')) {
+            $request->merge(['roles' => (array) $request->input('role')]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'nip' => 'nullable|string|max:50|unique:users',
             'position' => 'nullable|string|max:100',
-            'role' => 'required|string|in:full_access,content_management,event_finance,field_staff',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'string|in:full_access,content_management,event_finance,field_staff',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'roles.required' => 'Pilih minimal satu hak akses / role akun.',
+            'roles.min' => 'Pilih minimal satu hak akses / role akun.',
         ]);
+
+        $roles = array_values(array_unique($validated['roles']));
+        $primaryRole = in_array(User::ROLE_FULL_ACCESS, $roles) ? User::ROLE_FULL_ACCESS : $roles[0];
 
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'nip' => $validated['nip'],
             'position' => $validated['position'],
-            'role' => $validated['role'],
+            'role' => $primaryRole,
+            'roles' => $roles,
             'usertype' => 'karyawan',
             'password' => Hash::make($validated['password']),
             'email_verified_at' => now(),
         ]);
 
-        $roleName = User::getRoles()[$validated['role']]['name'] ?? $validated['role'];
-        return redirect()->route('admin.employees.index')->with('success', 'Karyawan baru berhasil ditambahkan dengan role ' . $roleName . '!');
+        return redirect()->route('admin.employees.index')->with('success', 'Karyawan baru berhasil ditambahkan!');
     }
 
     public function edit($id)
@@ -97,13 +116,22 @@ class AdminEmployeeController extends Controller
     {
         $employee = User::where('usertype', '!=', 'user')->findOrFail($id);
 
+        // Support both roles[] and legacy role string
+        if ($request->has('role') && !$request->has('roles')) {
+            $request->merge(['roles' => (array) $request->input('role')]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($employee->id)],
             'nip' => ['nullable', 'string', 'max:50', Rule::unique('users')->ignore($employee->id)],
             'position' => 'nullable|string|max:100',
-            'role' => 'required|string|in:full_access,content_management,event_finance,field_staff',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'string|in:full_access,content_management,event_finance,field_staff',
             'password' => 'nullable|string|min:8|confirmed',
+        ], [
+            'roles.required' => 'Pilih minimal satu hak akses / role akun.',
+            'roles.min' => 'Pilih minimal satu hak akses / role akun.',
         ]);
 
         $employee->name = $validated['name'];
@@ -113,7 +141,10 @@ class AdminEmployeeController extends Controller
 
         // Jangan ubah role ID 1 (Super Admin utama)
         if ($employee->id !== 1) {
-            $employee->role = $validated['role'];
+            $roles = array_values(array_unique($validated['roles']));
+            $primaryRole = in_array(User::ROLE_FULL_ACCESS, $roles) ? User::ROLE_FULL_ACCESS : $roles[0];
+            $employee->role = $primaryRole;
+            $employee->roles = $roles;
         }
 
         if ($request->filled('password')) {

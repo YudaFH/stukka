@@ -28,6 +28,7 @@ class User extends Authenticatable
         'password',
         'usertype',
         'role',
+        'roles',
         'nip',
         'position',
         'face_descriptor',
@@ -56,6 +57,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'face_registered_at' => 'datetime',
             'password' => 'hashed',
+            'roles' => 'array',
         ];
     }
 
@@ -97,13 +99,66 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get list of roles assigned to this user as an array.
+     */
+    public function getRolesListAttribute(): array
+    {
+        if (!empty($this->roles)) {
+            if (is_array($this->roles)) {
+                return $this->roles;
+            }
+            $decoded = json_decode($this->roles, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        if (!empty($this->role)) {
+            $parts = array_filter(array_map('trim', explode(',', $this->role)));
+            if (!empty($parts)) {
+                return array_values($parts);
+            }
+        }
+
+        if ($this->isAdmin()) {
+            return [self::ROLE_FULL_ACCESS];
+        }
+
+        if ($this->isKaryawan()) {
+            return [self::ROLE_FIELD_STAFF];
+        }
+
+        return [];
+    }
+
+    /**
+     * Check if user has a specific role.
+     */
+    public function hasRole(string $role): bool
+    {
+        if ($this->isFullAccess()) {
+            return true;
+        }
+
+        return in_array($role, $this->roles_list, true);
+    }
+
     public function getRoleNameAttribute(): string
     {
-        if ($this->isAdmin() && empty($this->role)) {
+        if ($this->id === 1 || ($this->isAdmin() && empty($this->role) && empty($this->roles))) {
             return 'Full Access';
         }
-        $roles = self::getRoles();
-        return $roles[$this->role]['name'] ?? ($this->isAdmin() ? 'Full Access' : 'Kru Lapangan');
+
+        $allRoles = self::getRoles();
+        $names = [];
+        foreach ($this->roles_list as $r) {
+            if (isset($allRoles[$r]['name'])) {
+                $names[] = $allRoles[$r]['name'];
+            }
+        }
+
+        return !empty($names) ? implode(' + ', $names) : ($this->isAdmin() ? 'Full Access' : 'Kru Lapangan');
     }
 
     public function isFullAccess(): bool
@@ -111,17 +166,22 @@ class User extends Authenticatable
         if ($this->role === self::ROLE_FULL_ACCESS) {
             return true;
         }
-        return $this->usertype === 'admin' && empty($this->role);
+
+        if (in_array(self::ROLE_FULL_ACCESS, $this->roles_list, true)) {
+            return true;
+        }
+
+        return $this->usertype === 'admin' && empty($this->role) && empty($this->roles);
     }
 
     public function canManageContent(): bool
     {
-        return $this->isFullAccess() || $this->role === self::ROLE_CONTENT_MANAGEMENT;
+        return $this->isFullAccess() || in_array(self::ROLE_CONTENT_MANAGEMENT, $this->roles_list, true);
     }
 
     public function canManageEventFinance(): bool
     {
-        return $this->isFullAccess() || $this->role === self::ROLE_EVENT_FINANCE;
+        return $this->isFullAccess() || in_array(self::ROLE_EVENT_FINANCE, $this->roles_list, true);
     }
 
     public function canManageEmployees(): bool
@@ -131,14 +191,14 @@ class User extends Authenticatable
 
     public function canManageAttendance(): bool
     {
-        return $this->isFullAccess() || $this->role === self::ROLE_EVENT_FINANCE;
+        return $this->isFullAccess() || in_array(self::ROLE_EVENT_FINANCE, $this->roles_list, true);
     }
 
     public function hasAdminAccess(): bool
     {
         return $this->isFullAccess() 
-            || $this->role === self::ROLE_CONTENT_MANAGEMENT 
-            || $this->role === self::ROLE_EVENT_FINANCE;
+            || in_array(self::ROLE_CONTENT_MANAGEMENT, $this->roles_list, true) 
+            || in_array(self::ROLE_EVENT_FINANCE, $this->roles_list, true);
     }
 
     public function isAdmin(): bool

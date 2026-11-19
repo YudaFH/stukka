@@ -75,15 +75,47 @@
             </div>
 
             {{-- Role / Hak Akses Akun --}}
-            <div class="pt-3 border-t-2 border-slate-100" x-data="{ selectedRole: '{{ old('role', 'field_staff') }}' }">
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Hak Akses / Role Akun *</label>
-                <p class="text-xs text-gray-500 mb-3">Tentukan fitur yang dapat diakses oleh akun ini di dalam sistem Stukka.</p>
+            @php
+                $initialRoles = old('roles', (array) old('role', ['field_staff']));
+            @endphp
+            <div class="pt-3 border-t-2 border-slate-100" 
+                 x-data="{ 
+                     selectedRoles: {{ json_encode($initialRoles) }},
+                     toggleRole(role) {
+                         if (role === 'full_access') {
+                             if (this.selectedRoles.includes('full_access')) {
+                                 this.selectedRoles = [];
+                             } else {
+                                 this.selectedRoles = ['full_access'];
+                             }
+                         } else {
+                             if (this.selectedRoles.includes('full_access')) {
+                                 this.selectedRoles = this.selectedRoles.filter(r => r !== 'full_access');
+                             }
+                             if (this.selectedRoles.includes(role)) {
+                                 this.selectedRoles = this.selectedRoles.filter(r => r !== role);
+                             } else {
+                                 this.selectedRoles.push(role);
+                             }
+                         }
+                     }
+                 }">
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Hak Akses / Role Akun *</label>
+                    <span class="text-[11px] font-semibold text-blue-800 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                        Bisa pilih lebih dari 1 role
+                    </span>
+                </div>
+                <p class="text-xs text-gray-500 mb-3">Tentukan fitur yang dapat diakses oleh akun ini. Anda dapat mencentang lebih dari satu role akses sesuai tanggung jawab karyawan.</p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {{-- 1. Full Access --}}
                     <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
-                           :class="selectedRole === 'full_access' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
-                        <input type="radio" name="role" value="full_access" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                           :class="selectedRoles.includes('full_access') ? 'border-[#001D5E] bg-blue-50/60 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="checkbox" name="roles[]" value="full_access" 
+                               :checked="selectedRoles.includes('full_access')"
+                               @change="toggleRole('full_access')"
+                               class="mt-0.5 rounded text-[#001D5E] focus:ring-0">
                         <div class="ml-3">
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-[#001D5E]">Full Access</span>
@@ -95,8 +127,11 @@
 
                     {{-- 2. Event & Finansial --}}
                     <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
-                           :class="selectedRole === 'event_finance' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
-                        <input type="radio" name="role" value="event_finance" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                           :class="selectedRoles.includes('event_finance') ? 'border-[#001D5E] bg-blue-50/60 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="checkbox" name="roles[]" value="event_finance" 
+                               :checked="selectedRoles.includes('event_finance')"
+                               @change="toggleRole('event_finance')"
+                               class="mt-0.5 rounded text-[#001D5E] focus:ring-0">
                         <div class="ml-3">
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-[#001D5E]">Event & Finansial</span>
@@ -108,8 +143,11 @@
 
                     {{-- 3. Content Management --}}
                     <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
-                           :class="selectedRole === 'content_management' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
-                        <input type="radio" name="role" value="content_management" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                           :class="selectedRoles.includes('content_management') ? 'border-[#001D5E] bg-blue-50/60 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="checkbox" name="roles[]" value="content_management" 
+                               :checked="selectedRoles.includes('content_management')"
+                               @change="toggleRole('content_management')"
+                               class="mt-0.5 rounded text-[#001D5E] focus:ring-0">
                         <div class="ml-3">
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-[#001D5E]">Content Management</span>
@@ -121,8 +159,11 @@
 
                     {{-- 4. Kru Lapangan (Staff Biasa) --}}
                     <label class="relative flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition-all"
-                           :class="selectedRole === 'field_staff' ? 'border-[#001D5E] bg-blue-50/50 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
-                        <input type="radio" name="role" value="field_staff" x-model="selectedRole" class="mt-0.5 text-[#001D5E] focus:ring-0">
+                           :class="selectedRoles.includes('field_staff') ? 'border-[#001D5E] bg-blue-50/60 shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300'">
+                        <input type="checkbox" name="roles[]" value="field_staff" 
+                               :checked="selectedRoles.includes('field_staff')"
+                               @change="toggleRole('field_staff')"
+                               class="mt-0.5 rounded text-[#001D5E] focus:ring-0">
                         <div class="ml-3">
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-slate-800">Kru Lapangan</span>
@@ -132,8 +173,11 @@
                         </div>
                     </label>
                 </div>
+                @error('roles')
+                    <p class="text-xs text-red-500 mt-1.5 font-bold">{{ $message }}</p>
+                @enderror
                 @error('role')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    <p class="text-xs text-red-500 mt-1.5 font-bold">{{ $message }}</p>
                 @enderror
             </div>
 
