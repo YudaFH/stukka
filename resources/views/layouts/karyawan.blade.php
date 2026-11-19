@@ -51,12 +51,17 @@
             <nav class="flex-1 overflow-y-auto sidebar-scroll py-6 px-3 space-y-1.5">
                 
                 @if(Auth::user()->hasAdminAccess())
+                @php
+                    $adminEntryRoute = Auth::user()->isFullAccess() 
+                        ? route('admin.index') 
+                        : (Auth::user()->canManageEventFinance() ? route('admin.scheduled-events.index') : route('admin.events.index'));
+                @endphp
                 <div class="mb-4 pb-3 border-b border-blue-900/60">
-                    <a href="{{ route('admin.index') }}" 
+                    <a href="{{ $adminEntryRoute }}" 
                        class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-[#001542] hover:from-[#F7941D] hover:to-orange-600 text-white transition-all shadow-md group border border-blue-400/30">
                         <span class="flex items-center gap-2 text-xs font-black tracking-wide">
                             <i data-lucide="shield-check" class="w-4 h-4 text-[#F7941D] group-hover:text-white"></i>
-                            PANEL ADMIN
+                            PANEL {{ Auth::user()->isFullAccess() ? 'ADMIN' : (Auth::user()->canManageEventFinance() ? 'EVENT' : 'KONTEN') }}
                         </span>
                         <i data-lucide="arrow-right" class="w-3.5 h-3.5 opacity-70 group-hover:translate-x-1 transition-transform"></i>
                     </a>
@@ -159,9 +164,14 @@
                 </a>
                 <div class="flex items-center gap-2">
                     @if(Auth::user()->hasAdminAccess())
-                        <a href="{{ route('admin.index') }}" class="px-2.5 py-1 rounded-lg bg-blue-800 text-orange-300 border border-blue-600 text-[10px] font-black flex items-center gap-1 shadow-xs hover:bg-[#F7941D] hover:text-white transition-colors">
+                        @php
+                            $adminEntryRoute = Auth::user()->isFullAccess() 
+                                ? route('admin.index') 
+                                : (Auth::user()->canManageEventFinance() ? route('admin.scheduled-events.index') : route('admin.events.index'));
+                        @endphp
+                        <a href="{{ $adminEntryRoute }}" class="px-2.5 py-1 rounded-lg bg-blue-800 text-orange-300 border border-blue-600 text-[10px] font-black flex items-center gap-1 shadow-xs hover:bg-[#F7941D] hover:text-white transition-colors">
                             <i data-lucide="shield" class="w-3 h-3 text-[#F7941D]"></i>
-                            <span>Admin</span>
+                            <span>{{ Auth::user()->isFullAccess() ? 'Admin' : (Auth::user()->canManageEventFinance() ? 'Event' : 'Konten') }}</span>
                         </a>
                     @endif
                     <div class="text-right">

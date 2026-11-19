@@ -31,36 +31,46 @@ class Admin
             return redirect()->route('user.dashboard')->with('error', 'Akses ditolak.');
         }
 
+        $defaultRedirect = function() use ($user) {
+            if ($user->canManageEventFinance()) {
+                return redirect()->route('admin.scheduled-events.index');
+            }
+            if ($user->canManageContent()) {
+                return redirect()->route('admin.events.index');
+            }
+            return redirect()->route('karyawan.dashboard');
+        };
+
         // 2. Cek izin per modul jika ditentukan
         if ($permission) {
             switch ($permission) {
                 case 'content':
                     if (!$user->canManageContent()) {
-                        return redirect()->route('admin.index')->with('error', 'Akses ditolak: Anda tidak memiliki izin Content Management.');
+                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Anda tidak memiliki izin Content Management.');
                     }
                     break;
 
                 case 'event_finance':
                     if (!$user->canManageEventFinance()) {
-                        return redirect()->route('admin.index')->with('error', 'Akses ditolak: Anda tidak memiliki izin Event & Finansial.');
+                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Anda tidak memiliki izin Event & Finansial.');
                     }
                     break;
 
                 case 'employees':
                     if (!$user->canManageEmployees()) {
-                        return redirect()->route('admin.index')->with('error', 'Akses ditolak: Menu Manajemen Karyawan hanya dapat diakses oleh Full Access Administrator.');
+                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Menu Manajemen Karyawan hanya dapat diakses oleh Full Access Administrator.');
                     }
                     break;
 
                 case 'attendance':
                     if (!$user->canManageAttendance()) {
-                        return redirect()->route('admin.index')->with('error', 'Akses ditolak: Menu Rekap Absensi hanya dapat diakses oleh Full Access Administrator.');
+                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Menu Rekap Absensi hanya dapat diakses oleh Full Access Administrator.');
                     }
                     break;
 
                 case 'full':
                     if (!$user->isFullAccess()) {
-                        return redirect()->route('admin.index')->with('error', 'Akses ditolak: Fitur ini hanya untuk Full Access Administrator.');
+                        return $defaultRedirect()->with('error', 'Akses ditolak: Fitur ini hanya untuk Full Access Administrator.');
                     }
                     break;
             }

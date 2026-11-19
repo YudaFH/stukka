@@ -75,7 +75,7 @@ class User extends Authenticatable
             self::ROLE_EVENT_FINANCE => [
                 'name' => 'Event & Finansial',
                 'label' => 'Event & Finansial',
-                'desc' => 'Kelola jadwal event, alokasi kru, pembayaran klien, pengeluaran & laporan keuangan, serta presensi biometrik wajah.',
+                'desc' => 'Kelola jadwal event produksi, alokasi kru, pembayaran klien, pengeluaran & pantau keuangan proyek.',
                 'badge_bg' => 'bg-emerald-600',
                 'badge_border' => 'border-emerald-700',
                 'badge_text' => 'text-white',
@@ -191,7 +191,7 @@ class User extends Authenticatable
 
     public function canManageAttendance(): bool
     {
-        return $this->isFullAccess() || in_array(self::ROLE_EVENT_FINANCE, $this->roles_list, true);
+        return $this->isFullAccess();
     }
 
     public function hasAdminAccess(): bool

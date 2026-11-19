@@ -89,40 +89,14 @@
             {{-- Menu Items --}}
             <nav class="flex-1 overflow-y-auto sidebar-scroll py-6 px-3 space-y-2">
                 
-                {{-- Dashboard --}}
+                {{-- Dashboard (Hanya untuk Super Admin / Full Access) --}}
+                @if(Auth::user()->isFullAccess())
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-2">Main</p>
                 <a href="{{ route('admin.index') }}" 
                    class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.index') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
                     <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
-
-                {{-- Presensi Mandiri (Hanya untuk Staff Operasional / Non-Full Access Admin) --}}
-                @if(!Auth::user()->isFullAccess())
-                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi Mandiri</p>
-
-                <a href="{{ route('karyawan.attendance.scan') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
-                    <span class="font-medium">Presensi Wajah</span>
-                </a>
-
-                <a href="{{ route('karyawan.dashboard') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="user-check" class="w-5 h-5"></i>
-                    <span class="font-medium">Portal Karyawan</span>
-                </a>
-
-                @if(!Auth::user()->hasRegisteredFace())
-                <a href="{{ route('karyawan.face.register') }}" 
-                   class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-orange-500/20 text-orange-200 hover:bg-[#F7941D] hover:text-white transition-all border border-orange-400/30">
-                    <span class="flex items-center gap-2.5 text-xs font-bold">
-                        <i data-lucide="camera" class="w-4 h-4 text-[#F7941D]"></i>
-                        Rekam Master Wajah
-                    </span>
-                    <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
-                </a>
-                @endif
                 @endif
 
                 {{-- Content Management --}}
@@ -165,19 +139,44 @@
                 </a>
                 @endif
 
-                {{-- HR & Kelola Karyawan & Absensi --}}
-                @if(Auth::user()->canManageEmployees() || Auth::user()->canManageAttendance())
+                {{-- Presensi Mandiri (Hanya untuk Staff Karyawan / Non-Full Access Admin) --}}
+                @if(!Auth::user()->isFullAccess())
+                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi Mandiri</p>
+
+                <a href="{{ route('karyawan.attendance.scan') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
+                    <span class="font-medium">Presensi Wajah</span>
+                </a>
+
+                <a href="{{ route('karyawan.dashboard') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="user-check" class="w-5 h-5"></i>
+                    <span class="font-medium">Portal Karyawan</span>
+                </a>
+
+                @if(!Auth::user()->hasRegisteredFace())
+                <a href="{{ route('karyawan.face.register') }}" 
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-orange-500/20 text-orange-200 hover:bg-[#F7941D] hover:text-white transition-all border border-orange-400/30">
+                    <span class="flex items-center gap-2.5 text-xs font-bold">
+                        <i data-lucide="camera" class="w-4 h-4 text-[#F7941D]"></i>
+                        Rekam Master Wajah
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                </a>
+                @endif
+                @endif
+
+                {{-- HR & Kelola Karyawan & Absensi (Khusus Super Admin Full Access) --}}
+                @if(Auth::user()->isFullAccess())
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Karyawan & Absensi</p>
 
-                @if(Auth::user()->canManageEmployees())
                 <a href="{{ route('admin.employees.index') }}" 
                    class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.employees.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
                     <i data-lucide="users" class="w-5 h-5"></i>
                     <span class="font-medium">Kelola Karyawan</span>
                 </a>
-                @endif
 
-                @if(Auth::user()->canManageAttendance())
                 <a href="{{ route('admin.attendances.index') }}" 
                    class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.attendances.index') || request()->routeIs('admin.attendances.export.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
                     <i data-lucide="clipboard-check" class="w-5 h-5"></i>
@@ -189,7 +188,6 @@
                     <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
                     <span class="font-medium">Aturan Presensi</span>
                 </a>
-                @endif
                 @endif
 
             </nav>
@@ -274,7 +272,8 @@
             {{-- Mobile Bottom Navigation Bar --}}
             <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 z-40 px-2 py-1.5 shadow-[0_-4px_10px_rgba(0,0,0,0.06)]">
                 <div class="grid grid-cols-5 items-center">
-                    {{-- 1. Dashboard --}}
+                    @if(Auth::user()->isFullAccess())
+                    {{-- 1. Dashboard (Super Admin) --}}
                     <a href="{{ route('admin.index') }}" 
                        class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.index') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
                         <div class="p-1 rounded-xl {{ request()->routeIs('admin.index') ? 'bg-[#001D5E] text-white' : '' }}">
@@ -282,33 +281,43 @@
                         </div>
                         <span class="text-[9px] mt-0.5">Home</span>
                     </a>
-
-                    @if(Auth::user()->canManageEventFinance())
-                    {{-- 2. Jadwal Event --}}
-                    <a href="{{ route('admin.scheduled-events.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.scheduled-events.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.scheduled-events.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="calendar" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Event</span>
-                    </a>
-                    @elseif(Auth::user()->canManageContent())
-                    {{-- 2. Portofolio --}}
-                    <a href="{{ route('admin.events.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.events.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.events.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="briefcase" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Portofolio</span>
-                    </a>
                     @else
-                    {{-- 2. Karyawan --}}
+                    {{-- 1. Modul Utama (Karyawan) --}}
+                    <a href="{{ Auth::user()->canManageEventFinance() ? route('admin.scheduled-events.index') : route('admin.events.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ (request()->routeIs('admin.scheduled-events.*') || request()->routeIs('admin.events.*')) ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ (request()->routeIs('admin.scheduled-events.*') || request()->routeIs('admin.events.*')) ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="{{ Auth::user()->canManageEventFinance() ? 'calendar' : 'briefcase' }}" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">{{ Auth::user()->canManageEventFinance() ? 'Event' : 'Portofolio' }}</span>
+                    </a>
+                    @endif
+
+                    @if(Auth::user()->isFullAccess())
+                    {{-- 2. Karyawan (Super Admin) --}}
                     <a href="{{ route('admin.employees.index') }}" 
                        class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.employees.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
                         <div class="p-1 rounded-xl {{ request()->routeIs('admin.employees.*') ? 'bg-[#001D5E] text-white' : '' }}">
                             <i data-lucide="users" class="w-5 h-5"></i>
                         </div>
                         <span class="text-[9px] mt-0.5">Karyawan</span>
+                    </a>
+                    @elseif(Auth::user()->canManageEventFinance())
+                    {{-- 2. Keuangan Event (Event Staff) --}}
+                    <a href="{{ route('admin.finance.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.finance.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.finance.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="wallet-cards" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Keuangan</span>
+                    </a>
+                    @elseif(Auth::user()->canManageContent())
+                    {{-- 2. Client Trust (Content Staff) --}}
+                    <a href="{{ route('admin.clients.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.clients.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.clients.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Client</span>
                     </a>
                     @endif
 
@@ -318,35 +327,26 @@
                         <div class="w-12 h-12 rounded-full bg-[#F7941D] text-white flex items-center justify-center border-4 border-white shadow-md group-hover:bg-orange-600 transition-colors">
                             <i data-lucide="scan-face" class="w-6 h-6"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">{{ Auth::user()->isFullAccess() ? 'Presensi' : 'Absen Wajah' }}</span>
+                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">{{ Auth::user()->isFullAccess() ? 'Presensi' : 'Absen' }}</span>
                     </a>
 
-                    @if(Auth::user()->canManageEventFinance())
-                    {{-- 4. Keuangan Event --}}
-                    <a href="{{ route('admin.finance.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.finance.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.finance.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="wallet-cards" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Keuangan</span>
-                    </a>
-                    @elseif(Auth::user()->canManageContent())
-                    {{-- 4. Testimoni --}}
-                    <a href="{{ route('admin.testimonials.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.testimonials.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.testimonials.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="message-square-quote" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Testimoni</span>
-                    </a>
-                    @else
-                    {{-- 4. Rekap Absensi --}}
+                    @if(Auth::user()->isFullAccess())
+                    {{-- 4. Rekap Absensi (Super Admin) --}}
                     <a href="{{ route('admin.attendances.index') }}" 
                        class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.attendances.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
                         <div class="p-1 rounded-xl {{ request()->routeIs('admin.attendances.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="scan-face" class="w-5 h-5"></i>
+                            <i data-lucide="clipboard-check" class="w-5 h-5"></i>
                         </div>
                         <span class="text-[9px] mt-0.5 font-bold">Rekap</span>
+                    </a>
+                    @else
+                    {{-- 4. Portal Karyawan (Staff) --}}
+                    <a href="{{ route('karyawan.dashboard') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('karyawan.dashboard') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Portal</span>
                     </a>
                     @endif
 

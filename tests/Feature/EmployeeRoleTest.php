@@ -71,9 +71,13 @@ class EmployeeRoleTest extends TestCase
         $contentResp = $this->actingAs($multiUser)->get(route('admin.events.index'));
         $this->assertEquals(200, $contentResp->getStatusCode());
 
-        // Cannot access Employee Management (Full Access only)
+        // Cannot access Employee Management (Full Access only) -> Redirected to permitted module
         $employeeResp = $this->actingAs($multiUser)->get(route('admin.employees.index'));
-        $employeeResp->assertRedirect(route('admin.index'));
+        $employeeResp->assertRedirect(route('admin.scheduled-events.index'));
+
+        // Cannot access Admin Dashboard (Full Access only) -> Redirected to permitted module
+        $dashboardResp = $this->actingAs($multiUser)->get(route('admin.index'));
+        $dashboardResp->assertRedirect(route('admin.scheduled-events.index'));
     }
 
     public function test_admin_can_update_employee_roles(): void

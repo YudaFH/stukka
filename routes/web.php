@@ -101,8 +101,8 @@ Route::middleware(['auth', 'karyawan'])->prefix('karyawan')->name('karyawan.')->
 // =========================================================================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    // A. DASHBOARD UTAMA ADMIN (Command Center)
-    Route::get('/', function () {
+    // A. DASHBOARD UTAMA ADMIN (Command Center - Khusus Full Access Admin)
+    Route::middleware('admin:full')->get('/', function () {
         // 1. Data Portofolio & Konten Publik
         $totalProjects = \App\Models\Event::count();
         $totalClients = \App\Models\Client::count();
