@@ -16,8 +16,12 @@ class Karyawan
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && (Auth::user()->usertype === 'karyawan' || Auth::user()->usertype === 'admin')) {
-            return $next($request);
+        if (Auth::check()) {
+            $user = Auth::user();
+            // Semua karyawan dan akun dengan akses admin berhak mengakses portal presensi & scan wajah
+            if ($user->usertype === 'karyawan' || $user->usertype === 'admin' || $user->hasAdminAccess()) {
+                return $next($request);
+            }
         }
 
         return redirect()->route('home')->with('error', 'Akses khusus karyawan!');

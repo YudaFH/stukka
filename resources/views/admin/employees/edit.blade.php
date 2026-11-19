@@ -106,7 +106,12 @@
                         Bisa pilih lebih dari 1 role
                     </span>
                 </div>
-                <p class="text-xs text-gray-500 mb-3">Tentukan fitur yang dapat diakses oleh akun ini. Anda dapat mencentang lebih dari satu role akses sesuai tanggung jawab karyawan.</p>
+                <p class="text-xs text-gray-500 mb-2">Tentukan fitur yang dapat diakses oleh akun ini. Anda dapat mencentang lebih dari satu role akses sesuai tanggung jawab karyawan.</p>
+
+                <div class="mb-3 p-3 rounded-xl bg-blue-50/70 border border-blue-200/60 flex items-center gap-2.5 text-xs text-[#001D5E]">
+                    <i data-lucide="info" class="w-4 h-4 text-[#F7941D] shrink-0"></i>
+                    <span><strong>Info:</strong> Semua role akun (Full Access, Event & Finansial, Content Management, maupun Kru Lapangan) <strong>otomatis dapat melakukan presensi wajah & rekam biometrik</strong>.</span>
+                </div>
 
                 @if($employee->id === 1)
                     <div class="p-4 rounded-xl bg-purple-50 border-2 border-purple-200 flex items-center justify-between">
@@ -183,7 +188,7 @@
                                     <span class="font-bold text-sm text-slate-800">Kru Lapangan</span>
                                     <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-500 text-white">Staff Biasa</span>
                                 </div>
-                                <p class="text-xs text-slate-600 mt-1">Hanya akses Portal Karyawan untuk absensi selfie GPS & melihat jadwal tugas event.</p>
+                                <p class="text-xs text-slate-600 mt-1">Staff kru operasional lapangan (jadwal tugas event & presensi biometrik wajah GPS tanpa akses admin CMS).</p>
                             </div>
                         </label>
                     </div>

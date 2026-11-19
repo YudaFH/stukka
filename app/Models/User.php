@@ -67,7 +67,7 @@ class User extends Authenticatable
             self::ROLE_FULL_ACCESS => [
                 'name' => 'Full Access',
                 'label' => 'Full Access (Semua Fitur)',
-                'desc' => 'Akses penuh ke semua menu admin, portofolio, keuangan, karyawan, dan absensi.',
+                'desc' => 'Akses penuh ke semua modul admin CMS, portofolio, keuangan, karyawan, rekap absensi, serta presensi biometrik wajah.',
                 'badge_bg' => 'bg-purple-600',
                 'badge_border' => 'border-purple-700',
                 'badge_text' => 'text-white',
@@ -75,7 +75,7 @@ class User extends Authenticatable
             self::ROLE_EVENT_FINANCE => [
                 'name' => 'Event & Finansial',
                 'label' => 'Event & Finansial',
-                'desc' => 'Mengelola jadwal acara, penugasan kru, pembayaran klien, dan keuangan event.',
+                'desc' => 'Kelola jadwal event, alokasi kru, pembayaran klien, pengeluaran & laporan keuangan, serta presensi biometrik wajah.',
                 'badge_bg' => 'bg-emerald-600',
                 'badge_border' => 'border-emerald-700',
                 'badge_text' => 'text-white',
@@ -83,7 +83,7 @@ class User extends Authenticatable
             self::ROLE_CONTENT_MANAGEMENT => [
                 'name' => 'Content Management',
                 'label' => 'Content Management',
-                'desc' => 'Mengelola portofolio project, logo client trust, dan testimoni klien.',
+                'desc' => 'Kelola portofolio project, logo client trust, testimoni klien, serta presensi biometrik wajah.',
                 'badge_bg' => 'bg-blue-600',
                 'badge_border' => 'border-blue-700',
                 'badge_text' => 'text-white',
@@ -91,7 +91,7 @@ class User extends Authenticatable
             self::ROLE_FIELD_STAFF => [
                 'name' => 'Kru Lapangan',
                 'label' => 'Kru Lapangan (Staff Biasa)',
-                'desc' => 'Hanya akses Portal Karyawan untuk absensi selfie GPS & melihat jadwal tugas event.',
+                'desc' => 'Staff operasional lapangan (jadwal tugas event & presensi biometrik wajah GPS tanpa akses admin CMS).',
                 'badge_bg' => 'bg-slate-600',
                 'badge_border' => 'border-slate-700',
                 'badge_text' => 'text-white',

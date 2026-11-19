@@ -97,6 +97,32 @@
                     <span class="font-medium">Dashboard</span>
                 </a>
 
+                {{-- Presensi Mandiri (Bisa Diakses oleh SEMUA Akun & Role) --}}
+                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi Mandiri</p>
+
+                <a href="{{ route('karyawan.attendance.scan') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.scan') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="scan-face" class="w-5 h-5 text-[#F7941D] group-hover:text-white"></i>
+                    <span class="font-medium">Presensi Wajah</span>
+                </a>
+
+                <a href="{{ route('karyawan.dashboard') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="user-check" class="w-5 h-5"></i>
+                    <span class="font-medium">Portal Karyawan</span>
+                </a>
+
+                @if(!Auth::user()->hasRegisteredFace())
+                <a href="{{ route('karyawan.face.register') }}" 
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-orange-500/20 text-orange-200 hover:bg-[#F7941D] hover:text-white transition-all border border-orange-400/30">
+                    <span class="flex items-center gap-2.5 text-xs font-bold">
+                        <i data-lucide="camera" class="w-4 h-4 text-[#F7941D]"></i>
+                        Rekam Master Wajah
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                </a>
+                @endif
+
                 {{-- Content Management --}}
                 @if(Auth::user()->canManageContent())
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Content Management</p>
@@ -204,10 +230,20 @@
                     </h2>
                 </div>
 
-                <div class="flex items-center gap-2 md:gap-4">
-                    <a href="{{ route('karyawan.dashboard') }}" class="text-xs md:text-sm font-bold text-blue-900 hover:text-white flex items-center gap-1.5 bg-blue-50 hover:bg-[#001D5E] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors border border-blue-200" title="Buka Portal Presensi Karyawan">
-                        <i data-lucide="scan-face" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[#F7941D]"></i>
-                        <span class="hidden sm:inline">Portal Presensi</span>
+                <div class="flex items-center gap-2 md:gap-3">
+                    <a href="{{ route('karyawan.attendance.scan') }}" 
+                       class="text-xs md:text-sm font-bold text-white flex items-center gap-1.5 bg-[#F7941D] hover:bg-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all shadow-sm" 
+                       title="Buka Kamera Presensi Wajah">
+                        <i data-lucide="scan-face" class="w-3.5 h-3.5 md:w-4 md:h-4 text-white"></i>
+                        <span class="hidden sm:inline">Presensi Wajah</span>
+                        <span class="sm:hidden text-xs">Absen</span>
+                    </a>
+
+                    <a href="{{ route('karyawan.dashboard') }}" 
+                       class="text-xs md:text-sm font-bold text-blue-900 hover:text-white flex items-center gap-1.5 bg-blue-50 hover:bg-[#001D5E] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors border border-blue-200" 
+                       title="Buka Portal Presensi Karyawan">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[#001D5E]"></i>
+                        <span class="hidden sm:inline">Portal Karyawan</span>
                     </a>
 
                     <a href="{{ route('home') }}" target="_blank" class="text-xs md:text-sm font-bold text-gray-600 hover:text-[#001D5E] flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors border border-gray-200">
@@ -273,12 +309,12 @@
                     @endif
 
                     {{-- 3. Presensi Center Button --}}
-                    <a href="{{ route('karyawan.dashboard') }}" 
-                       class="flex flex-col items-center justify-center -mt-5 group" title="Buka Presensi Karyawan">
+                    <a href="{{ route('karyawan.attendance.scan') }}" 
+                       class="flex flex-col items-center justify-center -mt-5 group" title="Buka Presensi Wajah">
                         <div class="w-12 h-12 rounded-full bg-[#F7941D] text-white flex items-center justify-center border-4 border-white shadow-md group-hover:bg-orange-600 transition-colors">
                             <i data-lucide="scan-face" class="w-6 h-6"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">Presensi</span>
+                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">Absen Wajah</span>
                     </a>
 
                     @if(Auth::user()->canManageEventFinance())
