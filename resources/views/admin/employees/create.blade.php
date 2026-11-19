@@ -81,6 +81,7 @@
             <div class="pt-3 border-t-2 border-slate-100" 
                  x-data="{ 
                      selectedRoles: {{ json_encode($initialRoles) }},
+                     showRoleInfo: false,
                      toggleRole(role) {
                          if (role === 'full_access') {
                              if (this.selectedRoles.includes('full_access')) {
@@ -101,17 +102,30 @@
                      }
                  }">
                 <div class="flex items-center justify-between mb-1">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Hak Akses / Role Akun *</label>
+                    <div class="flex items-center gap-1.5 relative">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Hak Akses / Role Akun *</label>
+                        <button type="button" 
+                                @click="showRoleInfo = !showRoleInfo" 
+                                @mouseenter="showRoleInfo = true" 
+                                @mouseleave="showRoleInfo = false"
+                                class="w-4 h-4 rounded-full bg-slate-200 hover:bg-[#001D5E] text-slate-600 hover:text-white flex items-center justify-center text-[10px] font-bold transition-colors cursor-pointer" 
+                                title="Informasi Presensi Role">
+                            i
+                        </button>
+                        {{-- Tooltip Popover --}}
+                        <div x-show="showRoleInfo" 
+                             x-cloak 
+                             x-transition.opacity.duration.150ms
+                             class="absolute left-0 top-6 z-30 w-72 sm:w-80 p-2.5 bg-slate-900/95 backdrop-blur-xs text-white text-xs rounded-xl shadow-xl border border-slate-700">
+                            <p class="font-bold text-orange-400 mb-0.5">💡 Info Presensi Wajah</p>
+                            <p class="text-slate-200 leading-relaxed text-[11px]">Semua role akun (Full Access, Event & Finansial, Content Management, maupun Kru Lapangan) otomatis dapat melakukan presensi wajah & rekam biometrik.</p>
+                        </div>
+                    </div>
                     <span class="text-[11px] font-semibold text-blue-800 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
                         Bisa pilih lebih dari 1 role
                     </span>
                 </div>
-                <p class="text-xs text-gray-500 mb-2">Tentukan fitur yang dapat diakses oleh akun ini. Anda dapat mencentang lebih dari satu role akses sesuai tanggung jawab karyawan.</p>
-                
-                <div class="mb-3 p-3 rounded-xl bg-blue-50/70 border border-blue-200/60 flex items-center gap-2.5 text-xs text-[#001D5E]">
-                    <i data-lucide="info" class="w-4 h-4 text-[#F7941D] shrink-0"></i>
-                    <span><strong>Info:</strong> Semua role akun (Full Access, Event & Finansial, Content Management, maupun Kru Lapangan) <strong>otomatis dapat melakukan presensi wajah & rekam biometrik</strong>.</span>
-                </div>
+                <p class="text-xs text-gray-500 mb-3">Tentukan fitur yang dapat diakses oleh akun ini di dalam sistem Stukka.</p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {{-- 1. Full Access --}}
