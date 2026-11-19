@@ -97,7 +97,8 @@
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                {{-- Presensi Mandiri (Bisa Diakses oleh SEMUA Akun & Role) --}}
+                {{-- Presensi Mandiri (Hanya untuk Staff Operasional / Non-Full Access Admin) --}}
+                @if(!Auth::user()->isFullAccess())
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi Mandiri</p>
 
                 <a href="{{ route('karyawan.attendance.scan') }}" 
@@ -121,6 +122,7 @@
                     </span>
                     <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
                 </a>
+                @endif
                 @endif
 
                 {{-- Content Management --}}
@@ -231,6 +233,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-3">
+                    @if(!Auth::user()->isFullAccess())
                     <a href="{{ route('karyawan.attendance.scan') }}" 
                        class="text-xs md:text-sm font-bold text-white flex items-center gap-1.5 bg-[#F7941D] hover:bg-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all shadow-sm" 
                        title="Buka Kamera Presensi Wajah">
@@ -238,12 +241,13 @@
                         <span class="hidden sm:inline">Presensi Wajah</span>
                         <span class="sm:hidden text-xs">Absen</span>
                     </a>
+                    @endif
 
                     <a href="{{ route('karyawan.dashboard') }}" 
                        class="text-xs md:text-sm font-bold text-blue-900 hover:text-white flex items-center gap-1.5 bg-blue-50 hover:bg-[#001D5E] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors border border-blue-200" 
                        title="Buka Portal Presensi Karyawan">
-                        <i data-lucide="user-check" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[#001D5E]"></i>
-                        <span class="hidden sm:inline">Portal Karyawan</span>
+                        <i data-lucide="scan-face" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[#F7941D]"></i>
+                        <span class="hidden sm:inline">Portal Presensi</span>
                     </a>
 
                     <a href="{{ route('home') }}" target="_blank" class="text-xs md:text-sm font-bold text-gray-600 hover:text-[#001D5E] flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors border border-gray-200">
@@ -309,12 +313,12 @@
                     @endif
 
                     {{-- 3. Presensi Center Button --}}
-                    <a href="{{ route('karyawan.attendance.scan') }}" 
-                       class="flex flex-col items-center justify-center -mt-5 group" title="Buka Presensi Wajah">
+                    <a href="{{ Auth::user()->isFullAccess() ? route('karyawan.dashboard') : route('karyawan.attendance.scan') }}" 
+                       class="flex flex-col items-center justify-center -mt-5 group" title="Buka Presensi">
                         <div class="w-12 h-12 rounded-full bg-[#F7941D] text-white flex items-center justify-center border-4 border-white shadow-md group-hover:bg-orange-600 transition-colors">
                             <i data-lucide="scan-face" class="w-6 h-6"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">Absen Wajah</span>
+                        <span class="text-[9px] mt-0.5 font-bold text-slate-700">{{ Auth::user()->isFullAccess() ? 'Presensi' : 'Absen Wajah' }}</span>
                     </a>
 
                     @if(Auth::user()->canManageEventFinance())
