@@ -68,6 +68,7 @@
             box-shadow: -5px 0 0 #e0e7ff, 5px 0 0 #e0e7ff;
         }
     </style>
+    @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-100">
 
@@ -266,6 +267,24 @@
 
             {{-- Scrollable Content --}}
             <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8 pb-28 md:pb-8">
+                @if(session('success'))
+                    <div class="mb-6 rounded-2xl border-2 border-emerald-600 bg-white p-4 flex items-center gap-3 text-emerald-950 shadow-sm">
+                        <span class="p-1 rounded bg-emerald-600 text-white flex items-center justify-center">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </span>
+                        <span class="font-bold text-sm">{{ session('success') }}</span>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="mb-6 rounded-2xl border-2 border-red-600 bg-white p-4 flex items-center gap-3 text-red-950 shadow-sm">
+                        <span class="p-1 rounded bg-red-600 text-white flex items-center justify-center">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        </span>
+                        <span class="font-bold text-sm">{{ session('error') }}</span>
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
 

@@ -1,4 +1,4 @@
-@extends('layouts.karyawan')
+@extends('layouts.admin')
 
 @section('title', 'Detail Event: ' . $event->title)
 @section('header_title', 'Detail Event Kru')

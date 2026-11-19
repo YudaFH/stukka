@@ -1,4 +1,4 @@
-@extends('layouts.karyawan')
+@extends('layouts.admin')
 
 @section('title', 'Presensi Biometrik Wajah & Lokasi')
 
@@ -38,7 +38,7 @@
         <a href="{{ route('karyawan.dashboard') }}" 
            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all whitespace-nowrap shrink-0 self-start sm:self-auto shadow-xs">
             <i data-lucide="arrow-left" class="w-4 h-4 text-slate-600"></i>
-            <span>Dashboard</span>
+            <span>Portal Karyawan</span>
         </a>
     </div>
 

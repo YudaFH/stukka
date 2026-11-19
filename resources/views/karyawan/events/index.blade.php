@@ -1,4 +1,4 @@
-@extends('layouts.karyawan')
+@extends('layouts.admin')
 
 @section('title', 'Jadwal Event & Kru')
 @section('header_title', 'Jadwal Event Operasional')
