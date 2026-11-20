@@ -302,8 +302,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach($displayEvents as $ev)
                         @php
-                            $isMyTask = $user->assignedEvents->contains('id', $ev->id);
-                            $myPivot = $ev->pivot ?? ($isMyTask ? $user->assignedEvents->firstWhere('id', $ev->id)->pivot : null);
+                            $crewAssignment = $ev->crew ? $ev->crew->firstWhere('id', $user->id) : null;
+                            $isMyTask = ($ev->pivot !== null) || ($crewAssignment !== null);
+                            $taskRole = $ev->pivot->role_in_event ?? $crewAssignment?->pivot?->role_in_event ?? null;
                         @endphp
                         <div class="p-4 rounded-xl border-2 {{ $isMyTask ? 'border-[#001D5E] bg-blue-50/30' : 'border-slate-200 bg-white' }} hover:border-slate-300 transition-all flex flex-col justify-between gap-3">
                             <div class="space-y-2">
@@ -318,10 +319,10 @@
                                             {{ $ev->event_type }}
                                         </span>
                                     </div>
-                                    @if($isMyTask && $myPivot && !empty($myPivot->role_in_event))
+                                    @if($isMyTask && !empty($taskRole))
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-black">
                                             <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i>
-                                            Tugas: {{ $myPivot->role_in_event }}
+                                            Tugas: {{ $taskRole }}
                                         </span>
                                     @elseif($isMyTask)
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-black">

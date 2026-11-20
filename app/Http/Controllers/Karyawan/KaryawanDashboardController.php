@@ -43,6 +43,7 @@ class KaryawanDashboardController extends Controller
 
         // Event Operasional & Tugas Lapangan Saya
         $myAssignedEvents = $user->assignedEvents()
+            ->with(['crew'])
             ->whereIn('status', ['scheduled', 'ongoing'])
             ->orderBy('start_date', 'asc')
             ->take(4)
