@@ -61,16 +61,6 @@ class EventExpense extends Model
         $this->payment_date = $value;
     }
 
-    public function getInvoiceProofAttribute(): ?string
-    {
-        return $this->attributes['payment_proof'] ?? null;
-    }
-
-    public function setInvoiceProofAttribute($value): void
-    {
-        $this->attributes['payment_proof'] = $value;
-    }
-
     protected function casts(): array
     {
         return [

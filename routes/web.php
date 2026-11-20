@@ -186,6 +186,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/finance/events/{eventId}/payment', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storePayment'])->name('finance.payment.store');
         Route::delete('/finance/payments/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyPayment'])->name('finance.payment.destroy');
         Route::post('/finance/events/{eventId}/expense', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'storeExpense'])->name('finance.expense.store');
+        Route::put('/finance/expenses/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'updateExpense'])->name('finance.expense.update');
         Route::post('/finance/expenses/{id}/toggle-status', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'toggleExpenseStatus'])->name('finance.expense.toggle-status');
         Route::delete('/finance/expenses/{id}', [\App\Http\Controllers\Admin\AdminEventFinanceController::class, 'destroyExpense'])->name('finance.expense.destroy');
     });

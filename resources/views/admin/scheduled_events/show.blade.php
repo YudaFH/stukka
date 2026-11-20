@@ -4,7 +4,32 @@
 @section('header_title', $event->title)
 
 @section('content')
-<div class="space-y-6" x-data="{ activeTab: '{{ request('tab', 'finance') }}', paymentModal: false, expenseModal: false }">
+<div class="space-y-6" x-data="{
+    activeTab: '{{ request('tab', 'finance') }}',
+    paymentModal: false,
+    expenseModal: false,
+    editExpenseModal: false,
+    editExpenseData: {
+        id: null,
+        category: 'other',
+        is_paid: '0',
+        item_name: '',
+        vendor_name: '',
+        amount: 0,
+        amount_formatted: '',
+        payment_method: '',
+        paid_at: '{{ date('Y-m-d') }}',
+        invoice_proof: null,
+        payment_proof: null,
+        notes: '',
+        update_url: ''
+    },
+    openEditExpense(data) {
+        this.editExpenseData = { ...data };
+        this.editExpenseData.amount_formatted = data.amount ? new Intl.NumberFormat('id-ID').format(data.amount) : '';
+        this.editExpenseModal = true;
+    }
+}">
 
     {{-- Top Action & Breadcrumb --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -396,6 +421,14 @@
                                                 <span>Invoice</span>
                                             </a>
                                         @endif
+                                        @if($expense->payment_proof)
+                                            <span>•</span>
+                                            <a href="{{ asset('storage/' . $expense->payment_proof) }}" target="_blank"
+                                               class="font-bold text-emerald-600 hover:underline inline-flex items-center gap-1">
+                                                <i data-lucide="check-circle-2" class="w-3 h-3"></i>
+                                                <span>Bukti Bayar</span>
+                                            </a>
+                                        @endif
                                     </div>
 
                                     @if($expense->notes)
@@ -404,7 +437,7 @@
                                 </div>
 
                                 {{-- Status Bayar & Aksi --}}
-                                <div class="flex items-center gap-2 shrink-0">
+                                <div class="flex items-center gap-1.5 shrink-0">
                                     {{-- Toggle Status Lunas / Belum Lunas --}}
                                     <form action="{{ route('admin.finance.expense.toggle-status', $expense->id) }}" method="POST">
                                         @csrf
@@ -421,6 +454,27 @@
                                             @endif
                                         </button>
                                     </form>
+
+                                    {{-- Edit Biaya Produksi --}}
+                                    <button type="button" 
+                                            @click="openEditExpense({{ json_encode([
+                                                'id' => $expense->id,
+                                                'category' => $expense->category,
+                                                'is_paid' => $expense->is_paid ? '1' : '0',
+                                                'item_name' => $expense->item_name,
+                                                'vendor_name' => $expense->vendor_name ?? '',
+                                                'amount' => (int) $expense->amount,
+                                                'payment_method' => $expense->payment_method ?? '',
+                                                'paid_at' => $expense->payment_date ? \Carbon\Carbon::parse($expense->payment_date)->format('Y-m-d') : date('Y-m-d'),
+                                                'invoice_proof' => $expense->invoice_proof ? asset('storage/' . $expense->invoice_proof) : null,
+                                                'payment_proof' => $expense->payment_proof ? asset('storage/' . $expense->payment_proof) : null,
+                                                'notes' => $expense->notes ?? '',
+                                                'update_url' => route('admin.finance.expense.update', $expense->id)
+                                            ]) }})"
+                                            class="p-1.5 text-slate-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition-colors"
+                                            title="Edit Biaya & Bukti Bayar">
+                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                    </button>
 
                                     {{-- Hapus --}}
                                     <form action="{{ route('admin.finance.expense.destroy', $expense->id) }}" method="POST"
@@ -850,10 +904,17 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bukti Tagihan / Invoice (Opsional)</label>
-                    <input type="file" name="invoice_proof" accept="image/*,application/pdf"
-                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-[#001D5E] hover:file:bg-blue-100">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bukti Tagihan / Invoice (Opsional)</label>
+                        <input type="file" name="invoice_proof" accept="image/*,application/pdf"
+                               class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-[#001D5E] hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bukti Pembayaran / Transfer (Opsional)</label>
+                        <input type="file" name="payment_proof" accept="image/*,application/pdf"
+                               class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100">
+                    </div>
                 </div>
 
                 <div>
@@ -870,6 +931,168 @@
                     <button type="submit" 
                             class="px-5 py-2 text-xs font-bold text-white bg-[#F7941D] hover:bg-orange-600 rounded-xl shadow-md transition-colors">
                         Simpan Biaya Produksi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- MODAL EDIT BIAYA PRODUKSI EVENT --}}
+    <div x-show="editExpenseModal"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+         style="display: none;"
+         @keydown.escape.window="editExpenseModal = false">
+        
+        <div class="bg-white rounded-2xl border-2 border-slate-300 max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+             @click.away="editExpenseModal = false">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-[#001D5E] text-white shadow-sm flex items-center justify-center">
+                        <i data-lucide="pencil" class="w-4 h-4 text-[#F7941D]"></i>
+                    </div>
+                    <h3 class="text-base font-black text-[#001D5E]">Edit Biaya Produksi & Bukti Bayar</h3>
+                </div>
+                <button type="button" @click="editExpenseModal = false" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form :action="editExpenseData.update_url" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori Biaya <span class="text-rose-500">*</span></label>
+                        <select name="category" required x-model="editExpenseData.category"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                            @foreach($expenseCategories as $catKey => $cat)
+                                @php
+                                    $catValue = is_array($cat) ? $catKey : $cat;
+                                    $catLabel = is_array($cat) ? ($cat['label'] ?? $catKey) : $cat;
+                                @endphp
+                                <option value="{{ $catValue }}">{{ $catLabel }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Status Pembayaran <span class="text-rose-500">*</span></label>
+                        <select name="is_paid" required x-model="editExpenseData.is_paid"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                            <option value="1">Sudah Lunas</option>
+                            <option value="0">Belum Lunas (Hutang Vendor)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Item / Pengeluaran <span class="text-rose-500">*</span></label>
+                    <input type="text" name="item_name" required x-model="editExpenseData.item_name" placeholder="Masukkan nama item / kebutuhan biaya"
+                           class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Vendor / Penerima</label>
+                        <input type="text" name="vendor_name" x-model="editExpenseData.vendor_name" placeholder="Nama pihak vendor / toko (opsional)"
+                               class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nominal Biaya <span class="text-rose-500">*</span></label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3 text-xs font-black text-slate-500 select-none pointer-events-none">Rp</span>
+                            <input type="text"
+                                   inputmode="numeric"
+                                   required
+                                   :value="editExpenseData.amount_formatted"
+                                   @input="
+                                       let clean = $event.target.value.replace(/[^0-9]/g, '');
+                                       editExpenseData.amount = clean;
+                                       editExpenseData.amount_formatted = clean ? new Intl.NumberFormat('id-ID').format(clean) : '';
+                                       $event.target.value = editExpenseData.amount_formatted;
+                                   "
+                                   placeholder="0"
+                                   class="w-full pl-10 pr-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E] font-bold text-[#001D5E]">
+                            <input type="hidden" name="amount" :value="editExpenseData.amount">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Bayar (Opsional)</label>
+                        <select name="payment_method" x-model="editExpenseData.payment_method"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                            <option value="">-- Pilih Metode (Opsional) --</option>
+                            <option value="Transfer Bank BCA">Transfer Bank BCA</option>
+                            <option value="Transfer Bank Mandiri">Transfer Bank Mandiri</option>
+                            <option value="Transfer Bank BNI">Transfer Bank BNI</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tanggal Bayar (Opsional)</label>
+                        <input type="date" name="paid_at" x-model="editExpenseData.paid_at"
+                               class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bukti Tagihan / Invoice</label>
+                        <template x-if="editExpenseData.invoice_proof">
+                            <div class="mb-1 text-xs">
+                                <a :href="editExpenseData.invoice_proof" target="_blank" class="inline-flex items-center gap-1 text-blue-600 font-bold hover:underline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                    <span>Lihat File Invoice</span>
+                                </a>
+                            </div>
+                        </template>
+                        <input type="file" name="invoice_proof" accept="image/*,application/pdf"
+                               class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-[#001D5E] hover:file:bg-blue-100">
+                        <p class="text-[10px] text-slate-400 mt-0.5">Unggah jika ingin mengganti file invoice</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bukti Pembayaran / Transfer</label>
+                        <template x-if="editExpenseData.payment_proof">
+                            <div class="mb-1 text-xs">
+                                <a :href="editExpenseData.payment_proof" target="_blank" class="inline-flex items-center gap-1 text-emerald-600 font-bold hover:underline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    <span>Lihat Bukti Bayar</span>
+                                </a>
+                            </div>
+                        </template>
+                        <input type="file" name="payment_proof" accept="image/*,application/pdf"
+                               class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100">
+                        <p class="text-[10px] text-slate-400 mt-0.5">Unggah jika ingin mengganti/menambahkan bukti bayar</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catatan Tambahan</label>
+                    <input type="text" name="notes" x-model="editExpenseData.notes" placeholder="Catatan tambahan / rincian biaya (opsional)"
+                           class="w-full px-3 py-2 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" @click="editExpenseModal = false"
+                            class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            class="px-5 py-2 text-xs font-bold text-white bg-[#001D5E] hover:bg-blue-900 rounded-xl shadow-md transition-colors">
+                        Simpan Perubahan
                     </button>
                 </div>
             </form>
