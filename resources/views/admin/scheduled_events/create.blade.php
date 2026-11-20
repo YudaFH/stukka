@@ -120,7 +120,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Kota / Lokasi <span class="text-rose-500">*</span></label>
                     <input type="text" name="location" required
-                           value="{{ old('location', $booking->location ?? 'Surabaya') }}"
+                           value="{{ old('location', $booking->location ?? '') }}"
                            placeholder="Kota atau lokasi acara"
                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#001D5E]">
                 </div>
