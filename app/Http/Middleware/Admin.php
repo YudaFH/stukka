@@ -46,25 +46,25 @@ class Admin
             switch ($permission) {
                 case 'content':
                     if (!$user->canManageContent()) {
-                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Anda tidak memiliki izin Content Management.');
+                        return $defaultRedirect()->with('error', 'Akses ditolak: Anda tidak memiliki izin Content Management.');
                     }
                     break;
 
                 case 'event_finance':
                     if (!$user->canManageEventFinance()) {
-                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Anda tidak memiliki izin Event & Finansial.');
+                        return $defaultRedirect()->with('error', 'Akses ditolak: Anda tidak memiliki izin Event & Finansial.');
                     }
                     break;
 
                 case 'employees':
                     if (!$user->canManageEmployees()) {
-                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Menu Manajemen Karyawan hanya dapat diakses oleh Full Access Administrator.');
+                        return $defaultRedirect()->with('error', 'Akses ditolak: Menu Manajemen Karyawan hanya dapat diakses oleh Full Access Administrator.');
                     }
                     break;
 
                 case 'attendance':
                     if (!$user->canManageAttendance()) {
-                        return ($user->isFullAccess() ? redirect()->route('admin.index') : $defaultRedirect())->with('error', 'Akses ditolak: Menu Rekap Absensi hanya dapat diakses oleh Full Access Administrator.');
+                        return $defaultRedirect()->with('error', 'Akses ditolak: Menu Rekap Absensi hanya dapat diakses oleh Full Access Administrator.');
                     }
                     break;
 

@@ -90,15 +90,13 @@
             {{-- Menu Items --}}
             <nav class="flex-1 overflow-y-auto sidebar-scroll py-6 px-3 space-y-2">
                 
-                {{-- Dashboard (Hanya untuk Super Admin / Full Access) --}}
-                @if(Auth::user()->isFullAccess())
+                {{-- Dashboard (Untuk Semua Role) --}}
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-2">Main</p>
-                <a href="{{ route('admin.index') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.index') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.index') : route('karyawan.dashboard') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ (request()->routeIs('admin.index') || request()->routeIs('karyawan.dashboard')) ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
                     <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                @endif
 
                 {{-- Content Management --}}
                 @if(Auth::user()->canManageContent())
@@ -140,6 +138,17 @@
                 </a>
                 @endif
 
+                {{-- Event & Kru (Khusus Karyawan Lapangan non-keuangan) --}}
+                @if(!Auth::user()->canManageEventFinance())
+                <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Event & Kru</p>
+
+                <a href="{{ route('karyawan.events.index') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.events.*') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                    <span class="font-medium">Jadwal Event & Kru</span>
+                </a>
+                @endif
+
                 {{-- Presensi Mandiri (Hanya untuk Staff Karyawan / Non-Full Access Admin) --}}
                 @if(!Auth::user()->isFullAccess())
                 <p class="px-3 text-xs font-bold text-blue-300 uppercase tracking-wider mb-2 mt-6">Presensi Mandiri</p>
@@ -150,10 +159,10 @@
                     <span class="font-medium">Presensi Wajah</span>
                 </a>
 
-                <a href="{{ route('karyawan.dashboard') }}" 
-                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
-                    <i data-lucide="user-check" class="w-5 h-5"></i>
-                    <span class="font-medium">Portal Karyawan</span>
+                <a href="{{ route('karyawan.attendance.history') }}" 
+                   class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all group {{ request()->routeIs('karyawan.attendance.history') ? 'bg-[#F7941D] text-white shadow-lg shadow-orange-500/30' : 'text-blue-100 hover:bg-blue-800 hover:text-white' }}">
+                    <i data-lucide="history" class="w-5 h-5"></i>
+                    <span class="font-medium">Riwayat Absensi</span>
                 </a>
 
                 @if(!Auth::user()->hasRegisteredFace())
@@ -291,28 +300,17 @@
             {{-- Mobile Bottom Navigation Bar --}}
             <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 z-40 px-2 py-1.5 shadow-[0_-4px_10px_rgba(0,0,0,0.06)]">
                 <div class="grid grid-cols-5 items-center">
-                    @if(Auth::user()->isFullAccess())
-                    {{-- 1. Dashboard (Super Admin) --}}
-                    <a href="{{ route('admin.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.index') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.index') ? 'bg-[#001D5E] text-white' : '' }}">
+                    {{-- 1. Dashboard / Home --}}
+                    <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.index') : route('karyawan.dashboard') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ (request()->routeIs('admin.index') || request()->routeIs('karyawan.dashboard')) ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ (request()->routeIs('admin.index') || request()->routeIs('karyawan.dashboard')) ? 'bg-[#001D5E] text-white' : '' }}">
                             <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                         </div>
                         <span class="text-[9px] mt-0.5">Home</span>
                     </a>
-                    @else
-                    {{-- 1. Modul Utama (Karyawan) --}}
-                    <a href="{{ Auth::user()->canManageEventFinance() ? route('admin.scheduled-events.index') : route('admin.events.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ (request()->routeIs('admin.scheduled-events.*') || request()->routeIs('admin.events.*')) ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ (request()->routeIs('admin.scheduled-events.*') || request()->routeIs('admin.events.*')) ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="{{ Auth::user()->canManageEventFinance() ? 'calendar' : 'briefcase' }}" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-[9px] mt-0.5 font-bold">{{ Auth::user()->canManageEventFinance() ? 'Event' : 'Portofolio' }}</span>
-                    </a>
-                    @endif
 
+                    {{-- 2. Modul Operasional Sesuai Role --}}
                     @if(Auth::user()->isFullAccess())
-                    {{-- 2. Karyawan (Super Admin) --}}
                     <a href="{{ route('admin.employees.index') }}" 
                        class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.employees.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
                         <div class="p-1 rounded-xl {{ request()->routeIs('admin.employees.*') ? 'bg-[#001D5E] text-white' : '' }}">
@@ -321,22 +319,28 @@
                         <span class="text-[9px] mt-0.5">Karyawan</span>
                     </a>
                     @elseif(Auth::user()->canManageEventFinance())
-                    {{-- 2. Keuangan Event (Event Staff) --}}
-                    <a href="{{ route('admin.finance.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.finance.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.finance.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="wallet-cards" class="w-5 h-5"></i>
+                    <a href="{{ route('admin.scheduled-events.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.scheduled-events.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.scheduled-events.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Keuangan</span>
+                        <span class="text-[9px] mt-0.5 font-bold">Event</span>
                     </a>
                     @elseif(Auth::user()->canManageContent())
-                    {{-- 2. Client Trust (Content Staff) --}}
-                    <a href="{{ route('admin.clients.index') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.clients.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.clients.*') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                    <a href="{{ route('admin.events.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.events.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.events.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="briefcase" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Client</span>
+                        <span class="text-[9px] mt-0.5 font-bold">Portofolio</span>
+                    </a>
+                    @else
+                    <a href="{{ route('karyawan.events.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('karyawan.events.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('karyawan.events.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Event</span>
                     </a>
                     @endif
 
@@ -349,8 +353,8 @@
                         <span class="text-[9px] mt-0.5 font-bold text-slate-700">{{ Auth::user()->isFullAccess() ? 'Presensi' : 'Absen' }}</span>
                     </a>
 
+                    {{-- 4. Modul Tambahan Sesuai Role --}}
                     @if(Auth::user()->isFullAccess())
-                    {{-- 4. Rekap Absensi (Super Admin) --}}
                     <a href="{{ route('admin.attendances.index') }}" 
                        class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.attendances.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
                         <div class="p-1 rounded-xl {{ request()->routeIs('admin.attendances.*') ? 'bg-[#001D5E] text-white' : '' }}">
@@ -358,14 +362,29 @@
                         </div>
                         <span class="text-[9px] mt-0.5 font-bold">Rekap</span>
                     </a>
-                    @else
-                    {{-- 4. Portal Karyawan (Staff) --}}
-                    <a href="{{ route('karyawan.dashboard') }}" 
-                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('karyawan.dashboard') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                        <div class="p-1 rounded-xl {{ request()->routeIs('karyawan.dashboard') ? 'bg-[#001D5E] text-white' : '' }}">
-                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                    @elseif(Auth::user()->canManageEventFinance())
+                    <a href="{{ route('admin.finance.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.finance.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.finance.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="wallet-cards" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-[9px] mt-0.5 font-bold">Portal</span>
+                        <span class="text-[9px] mt-0.5 font-bold">Keuangan</span>
+                    </a>
+                    @elseif(Auth::user()->canManageContent())
+                    <a href="{{ route('admin.clients.index') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('admin.clients.*') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('admin.clients.*') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Client</span>
+                    </a>
+                    @else
+                    <a href="{{ route('karyawan.attendance.history') }}" 
+                       class="flex flex-col items-center justify-center py-1 transition-colors {{ request()->routeIs('karyawan.attendance.history') ? 'text-[#001D5E] font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                        <div class="p-1 rounded-xl {{ request()->routeIs('karyawan.attendance.history') ? 'bg-[#001D5E] text-white' : '' }}">
+                            <i data-lucide="history" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[9px] mt-0.5 font-bold">Riwayat</span>
                     </a>
                     @endif
 

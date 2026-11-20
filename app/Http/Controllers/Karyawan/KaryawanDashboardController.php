@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Karyawan;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\AttendanceSetting;
+use App\Models\ScheduledEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -40,6 +41,22 @@ class KaryawanDashboardController extends Controller
             ->take(7)
             ->get();
 
+        // Event Operasional & Tugas Lapangan Saya
+        $myAssignedEvents = $user->assignedEvents()
+            ->whereIn('status', ['scheduled', 'ongoing'])
+            ->orderBy('start_date', 'asc')
+            ->take(4)
+            ->get();
+
+        $upcomingEvents = ScheduledEvent::with(['crew'])
+            ->whereIn('status', ['scheduled', 'ongoing'])
+            ->orderBy('start_date', 'asc')
+            ->take(4)
+            ->get();
+
+        $totalMyEvents = $user->assignedEvents()->count();
+        $totalActiveEvents = ScheduledEvent::whereIn('status', ['scheduled', 'ongoing'])->count();
+
         return view('karyawan.dashboard', compact(
             'user',
             'todayAttendance',
@@ -47,7 +64,11 @@ class KaryawanDashboardController extends Controller
             'totalPresent',
             'totalLate',
             'totalOnTime',
-            'recentAttendances'
+            'recentAttendances',
+            'myAssignedEvents',
+            'upcomingEvents',
+            'totalMyEvents',
+            'totalActiveEvents'
         ));
     }
 }
